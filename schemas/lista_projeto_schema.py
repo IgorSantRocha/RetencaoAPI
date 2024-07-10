@@ -3,7 +3,9 @@ from pydantic import BaseModel, Field
 
 
 class ListaProjetoBaseSC(BaseModel):
-    PROJETO: str
+    projeto: str
+    fase: str
+    cliente: str
 
 
 class ListaProjetoCreateSC(ListaProjetoBaseSC):
