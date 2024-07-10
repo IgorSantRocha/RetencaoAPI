@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, String, Text, DateTime
 from db.base_class import Base
 
 
-class Car(Base):
+class TbProjetoFDModel(Base):
     __tablename__ = 'TB_PROJETO_FEDEX'
     # "implicit_returning=false" não é recomendado. Usar somente se a tabela possuir Triggers(Gatilhos)
     __table_args__ = {'implicit_returning': False}
