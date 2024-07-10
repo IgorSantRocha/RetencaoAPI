@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 from core.request import RequestClient
 from schemas.lista_projeto_schema import ListaProjetoBaseSC
 from schemas.ocorrencia_schema import ListaOcorrenciaBaseSC
+from schemas.tipo_atendimento_schema import TipoAtendimentoBaseSC
 from core.core_consultas import Consultas
 from api import deps
 
@@ -37,3 +38,16 @@ async def consulta_lista_ocorrencias(
     consulta = Consultas()
     logger.info("Consultando projetos")
     return await consulta.busca_lista_ocorrencias(projeto, db)
+
+
+@router.get("/tipos/", response_model=List[TipoAtendimentoBaseSC])
+async def consulta_lista_ocorrencias(
+        db: Session = Depends(deps.get_db),
+        projeto: str = Query(..., description="Nome do projeto")
+) -> Any:
+    """
+    Consulta projetos
+    """
+    consulta = Consultas()
+    logger.info("Consultando projetos")
+    return await consulta.busca_lista_tipos(projeto, db)

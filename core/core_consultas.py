@@ -1,7 +1,10 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from schemas.lista_projeto_schema import ListaProjetoBaseSC
+from schemas.tipo_atendimento_schema import TipoAtendimentoBaseSC
+from schemas.ocorrencia_schema import ListaOcorrenciaBaseSC
 from crud.crud_lista_projeto import lista_projetos
 from crud.crud_lista_ocorrencia import lista_ocorrencia
+from crud.crud_lista_tipo_atendimento import lista_tipo_atendimento
 from fastapi import HTTPException
 import re
 
@@ -24,7 +27,7 @@ class Consultas:
 
         return projetos
 
-    async def busca_lista_ocorrencias(self, projeto: str, db: AsyncSession) -> list[ListaProjetoBaseSC]:
+    async def busca_lista_ocorrencias(self, projeto: str, db: AsyncSession) -> list[ListaOcorrenciaBaseSC]:
         if projeto == 'FISERV':
             projeto = 'FIRST'
 
@@ -39,6 +42,15 @@ class Consultas:
             db=db, filters=filters_ocorrencias)
 
         return ocorrencias
+
+    async def busca_lista_tipos(self, projeto: str, db: AsyncSession) -> list[TipoAtendimentoBaseSC]:
+        if projeto not in ('CTB', 'CTBPO', 'CIELO'):
+            tipos = lista_tipo_atendimento.get_multi(db=db)
+        else:
+            tipos = lista_tipo_atendimento.get_multi_filter(
+                db=db, filterby='Tipo_Atendimento', filter='Desinstalação')
+
+        return tipos
 
     ##### VALIDAÇÕES #####
     def _valida_cliente(self, cliente: str):
