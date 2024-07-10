@@ -46,14 +46,39 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         self,
         db: Session,
         *,
-        filters: Dict[str, Union[str, int]]
+        filters: List[Dict[str, Any]]
     ) -> List[ModelType]:
         query = db.query(self.model)
         logging.info(
             f'Obtendo lista de {self.model.__name__} de acordo com os filtros')
-        for filter_name, filter_value in filters.items():
-            query = query.filter(
-                getattr(self.model, filter_name) == filter_value)
+
+        # Definir um mapa de operadores
+        operator_map = {
+            '=': lambda field, value: field == value,
+            '!=': lambda field, value: field != value,
+            '<': lambda field, value: field < value,
+            '<=': lambda field, value: field <= value,
+            '>': lambda field, value: field > value,
+            '>=': lambda field, value: field >= value,
+            'like': lambda field, value: field.like(value),
+            'ilike': lambda field, value: field.ilike(value),
+            'in': lambda field, value: field.in_(value),
+            'notin': lambda field, value: field.notin_(value),
+            # Adicionar mais operadores conforme necessário
+        }
+
+        for filter in filters:
+            field_name = filter["field"]
+            operator = filter.get("operator", "=")  # Operador padrão é '='
+            value = filter["value"]
+
+            field = getattr(self.model, field_name)
+
+            if operator in operator_map:
+                query = query.filter(operator_map[operator](field, value))
+            else:
+                raise ValueError(f"Operador desconhecido: {operator}")
+
         return query.all()
 
     def get_last_by_filters(

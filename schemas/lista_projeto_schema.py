@@ -4,8 +4,6 @@ from pydantic import BaseModel, Field
 
 class ListaProjetoBaseSC(BaseModel):
     projeto: str
-    fase: str
-    cliente: str
 
 
 class ListaProjetoCreateSC(ListaProjetoBaseSC):
@@ -18,6 +16,8 @@ class ListaProjetoUpdateSC(ListaProjetoBaseSC):
 
 class ListaProjetoInDbBaseSC(ListaProjetoBaseSC):
     id: int
+    fase: str
+    cliente: str
 
 
 class ListaProjetoSC(ListaProjetoInDbBaseSC):
