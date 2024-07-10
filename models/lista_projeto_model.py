@@ -4,7 +4,7 @@ from db.base_class import Base
 
 class ListaProjetoModel(Base):
     __tablename__ = 'TB_PROJETO_FD'
-    id = Column("id", Integer)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     codigo = Column("CODIGO", String(50))
     projeto = Column("PROJETO", String(250))
     fase = Column("FASE", String(10))

@@ -7,4 +7,4 @@ class CRUDItem(CRUDBase[ListaTipoAtendimentoModel, TipoAtendimentoCreateSC, Tipo
     pass
 
 
-car = CRUDItem(ListaTipoAtendimentoModel)
+lista_tipo_atendimento = CRUDItem(ListaTipoAtendimentoModel)

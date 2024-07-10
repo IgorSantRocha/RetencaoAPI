@@ -18,9 +18,9 @@ from fastapi.openapi.utils import get_openapi
 
 def api_factory():
     app = FastAPI(title=settings.PROJECT_NAME,
-                  root_path="/Template",
+                  root_path="/RetencaoAPI",
                   version='0.0.1',
-                  description='Template para criação de APIs',
+                  description='API para abertura de chamados na retenção via APP e ChatBot',
                   )
     logging.config.dictConfig(settings.LOGGING_CONFIG)
     '''resource = Resource(attributes={"service.name": settings.PROJECT_NAME})
@@ -59,14 +59,14 @@ def get_index():
 
 @app.get(f"{app.root_path}/docs", include_in_schema=False)
 async def custom_swagger_ui_html():
-    return get_swagger_ui_html(openapi_url="/Retencao/openapi.json", title='API Docs')
+    return get_swagger_ui_html(openapi_url="/RetencaoAPI/openapi.json", title='API Docs')
 
 # Rota para a documentação Redoc
 
 
 @app.get(f"{app.root_path}/redoc", include_in_schema=False)
 async def redoc_html():
-    return get_redoc_html(openapi_url="/Retencao/openapi.json", title='ReDoc')
+    return get_redoc_html(openapi_url="/RetencaoAPI/openapi.json", title='ReDoc')
 
 '''Rota para o esquema OpenAPI'''
 

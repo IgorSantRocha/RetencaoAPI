@@ -7,4 +7,4 @@ class CRUDItem(CRUDBase[ListaProjetoModel, ListaProjetoCreateSC, ListaProjetoUpd
     pass
 
 
-car = CRUDItem(ListaProjetoModel)
+lista_projetos = CRUDItem(ListaProjetoModel)

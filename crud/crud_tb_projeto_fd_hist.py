@@ -7,4 +7,4 @@ class CRUDItem(CRUDBase[TbProjetoFDHistModel, TbProjetoFedexHistoricoCreateSC, T
     pass
 
 
-car = CRUDItem(TbProjetoFDHistModel)
+tb_projeto_fd_hist = CRUDItem(TbProjetoFDHistModel)
