@@ -41,7 +41,7 @@ async def consulta_lista_ocorrencias(
 
 
 @router.get("/tipos/", response_model=List[TipoAtendimentoBaseSC])
-async def consulta_lista_ocorrencias(
+async def consulta_lista_tipos(
         db: Session = Depends(deps.get_db),
         projeto: str = Query(..., description="Nome do projeto")
 ) -> Any:

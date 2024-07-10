@@ -10,6 +10,7 @@ class TbProjetoFedexHistoricoBaseSC(BaseModel):
     ocorrencia: Optional[str]
     projeto: Optional[str]
     tipo_atendimento: Optional[str]
+    tecnico: Optional[str]
 
 
 class TbProjetoFedexHistoricoCreateSC(TbProjetoFedexHistoricoBaseSC):
