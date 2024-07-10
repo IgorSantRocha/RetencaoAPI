@@ -2,21 +2,21 @@ from typing import Optional
 from pydantic import BaseModel, Field
 
 
-class TipoAtendimentoBase(BaseModel):
+class TipoAtendimentoBaseSC(BaseModel):
     Tipo_Atendimento: str
 
 
-class TipoAtendimentoCreate(TipoAtendimentoBase):
+class TipoAtendimentoCreateSC(TipoAtendimentoBaseSC):
     pass
 
 
-class TipoAtendimentoUpdate(TipoAtendimentoBase):
+class TipoAtendimentoUpdateSC(TipoAtendimentoBaseSC):
     pass
 
 
-class TipoAtendimentoInDbBase(TipoAtendimentoBase):
+class TipoAtendimentoInDbBaseSC(TipoAtendimentoBaseSC):
     id: int
 
 
-class TipoAtendimento(TipoAtendimentoInDbBase):
+class TipoAtendimentoSC(TipoAtendimentoInDbBaseSC):
     pass

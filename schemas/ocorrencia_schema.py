@@ -2,21 +2,21 @@ from typing import Optional
 from pydantic import BaseModel, Field
 
 
-class ListaOcorrenciaBase(BaseModel):
+class ListaOcorrenciaBaseSC(BaseModel):
     motivo: str
 
 
-class ListaOcorrenciaCreate(ListaOcorrenciaBase):
+class ListaOcorrenciaCreateSC(ListaOcorrenciaBaseSC):
     pass
 
 
-class ListaOcorrenciaUpdate(ListaOcorrenciaBase):
+class ListaOcorrenciaUpdateSC(ListaOcorrenciaBaseSC):
     pass
 
 
-class ListaOcorrenciaInDbBase(ListaOcorrenciaBase):
+class ListaOcorrenciaInDbBaseSC(ListaOcorrenciaBaseSC):
     id: int
 
 
-class ListaOcorrencia(ListaOcorrenciaInDbBase):
+class ListaOcorrenciaSC(ListaOcorrenciaInDbBaseSC):
     pass

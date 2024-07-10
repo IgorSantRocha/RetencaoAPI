@@ -2,21 +2,21 @@ from typing import Optional
 from pydantic import BaseModel, Field
 
 
-class ListaProjetoBase(BaseModel):
+class ListaProjetoBaseSC(BaseModel):
     PROJETO: str
 
 
-class ListaProjetoCreate(ListaProjetoBase):
+class ListaProjetoCreateSC(ListaProjetoBaseSC):
     pass
 
 
-class ListaProjetoUpdate(ListaProjetoBase):
+class ListaProjetoUpdateSC(ListaProjetoBaseSC):
     pass
 
 
-class ListaProjetoInDbBase(ListaProjetoBase):
+class ListaProjetoInDbBaseSC(ListaProjetoBaseSC):
     id: int
 
 
-class ListaProjeto(ListaProjetoInDbBase):
+class ListaProjetoSC(ListaProjetoInDbBaseSC):
     pass

@@ -19,22 +19,22 @@ Criando modelo de resposta do Evolution API
 '''
 
 
-class Key(SCBaseModel):
+class KeySC(SCBaseModel):
     remoteJid: str
     fromMe: bool
     id: str
 
 
-class ExtendedTextMessage(SCBaseModel):
+class ExtendedTextMessageSC(SCBaseModel):
     text: str
 
 
-class Message(SCBaseModel):
-    extendedTextMessage: ExtendedTextMessage
+class MessageSC(SCBaseModel):
+    extendedTextMessage: ExtendedTextMessageSC
 
 
-class ResponseEvolution(SCBaseModel):
-    key: Key
-    message: Message
+class ResponseEvolutionSC(SCBaseModel):
+    key: KeySC
+    message: MessageSC
     messageTimestamp: str
     status: str
