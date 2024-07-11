@@ -29,6 +29,13 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         logging.info(f'Obtendo {self.model.__name__} de id={id}')
         return db.query(self.model).filter(self.model.id == id).first()
 
+    def get_first_by_filter(
+        self, db: Session, *, order_by: str = "id", filterby: str = "enviado", filter: str
+    ) -> List[ModelType]:
+        logging.info(
+            f'Obtendo lista de {self.model.__name__} cujo {filterby}={filter}')
+        return db.query(self.model).order_by(getattr(self.model, order_by)).filter(getattr(self.model, filterby) == filter).first()
+
     def get_multi(
             self, db: Session, *, skip: int = 0, limit: int = 100, order_by: str = "id"
     ) -> List[ModelType]:

@@ -32,3 +32,4 @@ class TbProjetoFDModel(Base):
     tipo: str = Column(String(250), nullable=True)
     acao_d1: str = Column(String(250), nullable=True)
     call_id: str = Column(String(250), nullable=True)
+    reabertura = Column("Reabertura", String(2), nullable=True)

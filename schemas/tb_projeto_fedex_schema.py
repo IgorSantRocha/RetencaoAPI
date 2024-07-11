@@ -5,29 +5,33 @@ from pydantic import BaseModel, Field
 
 class TbProjetoFedexBaseSC(BaseModel):
     os: str
-    problema_apresentado: Optional[str]
-    ocorrencia: Optional[str]
-    projeto: Optional[str]
-    tipo_atendimento: Optional[str]
-    dt_abertura: Optional[datetime]
-    atendente_abertura: Optional[str]
-    retorno_tecnico: Optional[str]
-    nome_tecnico: Optional[str]
-    telefone_tecnico: Optional[str]
-    acao_D29: Optional[str]
-    status: Optional[str]
-    subprojeto: Optional[str]
-    cliente: Optional[str]
-    versao: Optional[str]
-    chave: Optional[str]
-    dt_fechamento: Optional[datetime]
-    fase: Optional[str]
-    conclusao_operador: Optional[str]
-    definicao: Optional[str]
-    status_relatorio: Optional[str]
-    etapa: Optional[str]
-    tipo: Optional[str]
-    acao_d1: Optional[str]
+    problema_apresentado: str
+    ocorrencia: str
+    projeto: str
+    tipo_atendimento: str
+    # dt_abertura: Optional[datetime]
+    dt_abertura: str
+    atendente_abertura: str
+    retorno_tecnico: str
+    nome_tecnico: str
+    telefone_tecnico: str
+    acao_D29: str
+    status: str
+    subprojeto: str
+    cliente: str
+    versao: str
+    chave: str
+    # dt_fechamento: Optional[datetime]
+    dt_fechamento: str
+    fase: str
+    conclusao_operador: str
+    definicao: str
+    status_relatorio: str
+    etapa: str
+    tipo: str
+    acao_d1: str
+    call_id: str
+    reabertura: Optional[str]
 
 
 class TbProjetoFedexCreateSC(TbProjetoFedexBaseSC):
