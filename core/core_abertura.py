@@ -15,12 +15,8 @@ logger = logging.getLogger(__name__)
 class Abertura():
     async def abertura_os(self, info_os: TbProjetoFedexHistoricoCreateSC, meio_captura: str, db: AsyncSession) -> TbProjetoFedexCreateSC:
         obj_abertura = await self.cria_obj_in(info_os, db)
-        if meio_captura in ('APP', 'CHAT'):
+        if meio_captura != 'SYS':
             obj_abertura.atendente_abertura = meio_captura
-        elif meio_captura != 'SYS':
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                                detail='Meio de captura informado é inválido. Consulte os administradores!')
-
         # faço uma consulta para saber se a OS já existe e decidir entre update ou insert
         consulta_os: TbProjetoFedexBaseSC = tb_projeto_fd.get_first_by_filter(
             db=db, filterby='os', filter=obj_abertura.os)

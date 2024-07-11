@@ -9,7 +9,7 @@ from schemas.ocorrencia_schema import ListaOcorrenciaBaseSC
 from schemas.tipo_atendimento_schema import TipoAtendimentoBaseSC
 from schemas.tb_projeto_fedex_historico_schema import TbProjetoFedexHistoricoBaseSC
 from schemas.tb_projeto_fedex_schema import TbProjetoFedexCreateSC
-from core.core_consultas import Consultas
+from core.core_tokens import Token
 from core.core_abertura import Abertura
 from api import deps
 from fastapi import security
@@ -25,6 +25,9 @@ async def post_abertura_chatbot(info_os: TbProjetoFedexHistoricoBaseSC,
                                 apikey: Annotated[Union[str, None], Header()],
                                 db: Session = Depends(deps.get_db)):
     logger.info("iniciando abertura do chamado")
+    validacao = Token()
+
+    meio_captura = await validacao.valida_token(apikey=apikey, db=db)
     abertura = Abertura()
 
-    return await abertura.abertura_os(info_os=info_os, meio_captura=apikey, db=db)
+    return await abertura.abertura_os(info_os=info_os, meio_captura=meio_captura, db=db)
