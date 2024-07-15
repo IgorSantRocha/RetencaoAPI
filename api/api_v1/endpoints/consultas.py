@@ -1,9 +1,8 @@
 from typing import Any, List
 import logging
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
-from core.request import RequestClient
 from schemas.lista_projeto_schema import ListaProjetoBaseSC
 from schemas.ocorrencia_schema import ListaOcorrenciaBaseSC
 from schemas.tipo_atendimento_schema import TipoAtendimentoBaseSC

@@ -1,18 +1,13 @@
-from typing import Any, List, Annotated, Union
+from typing import Annotated, Union
 import logging
-
-from fastapi import APIRouter, Depends, HTTPException, Query, status, Header
+from fastapi import APIRouter, Depends, status, Header
 from sqlalchemy.orm import Session
-from core.request import RequestClient
-from schemas.lista_projeto_schema import ListaProjetoBaseSC
-from schemas.ocorrencia_schema import ListaOcorrenciaBaseSC
-from schemas.tipo_atendimento_schema import TipoAtendimentoBaseSC
 from schemas.tb_projeto_fedex_historico_schema import TbProjetoFedexHistoricoBaseSC
 from schemas.tb_projeto_fedex_schema import TbProjetoFedexCreateSC
 from core.core_tokens import Token
 from core.core_abertura import Abertura
 from api import deps
-from fastapi import security
+
 router = APIRouter()
 logger = logging.getLogger(__name__)
 
@@ -26,7 +21,6 @@ async def post_abertura_chatbot(info_os: TbProjetoFedexHistoricoBaseSC,
                                 db: Session = Depends(deps.get_db)):
     logger.info("iniciando abertura do chamado")
     validacao = Token()
-
     meio_captura = await validacao.valida_token(apikey=apikey, db=db)
     abertura = Abertura()
 
