@@ -3,6 +3,7 @@ import logging
 
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
+from core.core_apikey import get_api_key, APIKey
 from schemas.lista_projeto_schema import ListaProjetoBaseSC
 from schemas.ocorrencia_schema import ListaOcorrenciaBaseSC
 from schemas.tipo_atendimento_schema import TipoAtendimentoBaseSC
@@ -16,7 +17,8 @@ logger = logging.getLogger(__name__)
 @router.get("/projetos/", response_model=List[ListaProjetoBaseSC])
 async def consulta_lista_projetos(
         db: Session = Depends(deps.get_db),
-        cliente: str = None
+        cliente: str = None,
+        api_key: APIKey = Depends(get_api_key)
 ) -> Any:
     """
     Consulta projetos
@@ -29,7 +31,8 @@ async def consulta_lista_projetos(
 @router.get("/ocorrencias/", response_model=List[ListaOcorrenciaBaseSC])
 async def consulta_lista_ocorrencias(
         db: Session = Depends(deps.get_db),
-        projeto: str = Query(..., description="Nome do projeto")
+        projeto: str = Query(..., description="Nome do projeto"),
+        api_key: APIKey = Depends(get_api_key)
 ) -> Any:
     """
     Consulta projetos
@@ -42,7 +45,8 @@ async def consulta_lista_ocorrencias(
 @router.get("/tipos/", response_model=List[TipoAtendimentoBaseSC])
 async def consulta_lista_tipos(
         db: Session = Depends(deps.get_db),
-        projeto: str = Query(..., description="Nome do projeto")
+        projeto: str = Query(..., description="Nome do projeto"),
+        api_key: APIKey = Depends(get_api_key)
 ) -> Any:
     """
     Consulta projetos
