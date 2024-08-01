@@ -12,6 +12,12 @@ class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
     API_VERSION: str = '0.0.2'
     SECRET_KEY: str = secrets.token_urlsafe(32)
+
+    odoo_url = "http://127.0.0.1:8069/"
+    odoo_db = "odoo_db"
+    odoo_username = 'username_odoo_db'
+    odoo_password = 'password_odoo_db'
+
     API_KEY = "Sua_chave_vai_aqui"
     API_KEY_NAME = "access_token"
     api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=False)
