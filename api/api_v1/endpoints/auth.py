@@ -1,6 +1,5 @@
 import logging
 from fastapi import APIRouter, Depends, status
-from sqlalchemy.orm import Session
 from schemas.auth_schema import Auth, AuthResponse
 from core.core_apikey import busca_meio_captura
 from core.core_auth import AuthOdoo

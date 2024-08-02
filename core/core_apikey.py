@@ -3,7 +3,8 @@ from core.config import settings
 from sqlalchemy.orm import Session
 from crud.crud_tb_retencaoapi_tokens import tb_retencaoapi_tokens
 from api import deps
-from schemas.apikey_schema import APIKey, APIKeyPerson
+from schemas.apikey_schema import APIKeyPerson
+
 
 async def busca_meio_captura(apikey: APIKeyPerson = Security(settings.api_key_header), db: Session = Depends(deps.get_db)) -> str:
     '''

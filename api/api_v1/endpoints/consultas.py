@@ -1,6 +1,6 @@
 from typing import Any, List
 import logging
-from schemas.apikey_schema import APIKey, APIKeyPerson
+from schemas.apikey_schema import APIKeyPerson
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 from core.core_apikey import busca_meio_captura

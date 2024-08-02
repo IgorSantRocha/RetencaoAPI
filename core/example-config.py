@@ -4,7 +4,7 @@ Renomeie o módulo para config.py
 import secrets
 from typing import Any, Dict, List, Optional, Union
 
-from pydantic import AnyHttpUrl, AnyUrl, validator
+from pydantic import AnyHttpUrl, validator
 from pydantic_settings import BaseSettings
 
 

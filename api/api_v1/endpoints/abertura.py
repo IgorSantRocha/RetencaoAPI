@@ -1,7 +1,6 @@
-from typing import Annotated, Union
 import logging
-from schemas.apikey_schema import APIKey, APIKeyPerson
-from fastapi import APIRouter, Depends, status, Header
+from schemas.apikey_schema import APIKeyPerson
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 from schemas.tb_projeto_fedex_historico_schema import TbProjetoFedexHistoricoSC
 from schemas.tb_projeto_fedex_schema import TbProjetoFedexCreateSC

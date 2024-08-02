@@ -6,7 +6,6 @@ from crud.crud_lista_projeto import lista_projetos
 from crud.crud_tb_projeto_fd import tb_projeto_fd
 from crud.crud_tb_projeto_fd_hist import tb_projeto_fd_hist
 from core.config import settings
-from fastapi import HTTPException, status
 import uuid
 import logging
 
@@ -15,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 class Abertura():
     async def abertura_os(self, info_os: TbProjetoFedexHistoricoSC, meio_captura: str, db: AsyncSession) -> TbProjetoFedexCreateSC:
-        #Crio o objeto com os campos padrões
+        # Crio o objeto com os campos padrões
         obj_abertura = await self.cria_obj_in(info_os, db, meio_captura)
         if meio_captura != 'SYS':
             obj_abertura.atendente_abertura = meio_captura
@@ -84,7 +83,7 @@ class Abertura():
             call_id = await self._gerar_id_unico()
         else:
             call_id = None
-            
+
         data_hora_atual = datetime.now()
         data_hora_formatada = data_hora_atual.strftime("%d/%m/%Y %H:%M:%S")
         data_hora_formato_sql_server: str = data_hora_atual.strftime(
