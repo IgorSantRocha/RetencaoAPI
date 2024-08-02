@@ -11,6 +11,11 @@ class AuthOdoo:
         uid = common.authenticate(
             settings.odoo_db, usr, pwd, {})
 
+        if not uid:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED, detail="Usuário ou senha incorretos!"
+            )
+
         return uid
 
     async def cria_usuario(self,
