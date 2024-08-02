@@ -1,9 +1,10 @@
 from datetime import datetime
 from sqlalchemy.ext.asyncio import AsyncSession
-from schemas.tb_projeto_fedex_historico_schema import TbProjetoFedexHistoricoCreateSC
+from schemas.tb_projeto_fedex_historico_schema import TbProjetoFedexHistoricoCreateSC, TbProjetoFedexHistoricoSC
 from schemas.tb_projeto_fedex_schema import TbProjetoFedexBaseSC, TbProjetoFedexCreateSC
 from crud.crud_lista_projeto import lista_projetos
 from crud.crud_tb_projeto_fd import tb_projeto_fd
+from crud.crud_tb_projeto_fd_hist import tb_projeto_fd_hist
 from core.config import settings
 from fastapi import HTTPException, status
 import uuid
@@ -13,8 +14,8 @@ logger = logging.getLogger(__name__)
 
 
 class Abertura():
-    async def abertura_os(self, info_os: TbProjetoFedexHistoricoCreateSC, meio_captura: str, db: AsyncSession) -> TbProjetoFedexCreateSC:
-        obj_abertura = await self.cria_obj_in(info_os, db)
+    async def abertura_os(self, info_os: TbProjetoFedexHistoricoSC, meio_captura: str, db: AsyncSession) -> TbProjetoFedexCreateSC:
+        obj_abertura = await self.cria_obj_in(info_os, db, meio_captura)
         if meio_captura != 'SYS':
             obj_abertura.atendente_abertura = meio_captura
         # faço uma consulta para saber se a OS já existe e decidir entre update ou insert
@@ -41,6 +42,13 @@ class Abertura():
             logger.info("Realizando o create")
             tb_projeto_fd.create(db=db, obj_in=obj_abertura)
 
+        obj_in_hist = TbProjetoFedexHistoricoCreateSC(
+            os=obj_abertura.os,
+            problema_apresentado=obj_abertura.problema_apresentado,
+            tecnico=obj_abertura.nome_tecnico,
+            callid=obj_abertura.call_id
+        )
+        tb_projeto_fd_hist.create(db=db, obj_in=obj_in_hist)
         return obj_abertura
 
     async def _gerar_id_unico(self) -> str:
@@ -57,7 +65,7 @@ class Abertura():
 
         return id_unico
 
-    async def cria_obj_in(self, info_os: TbProjetoFedexHistoricoCreateSC, db: AsyncSession) -> TbProjetoFedexCreateSC:
+    async def cria_obj_in(self, info_os: TbProjetoFedexHistoricoSC, db: AsyncSession, meio_captura: str) -> TbProjetoFedexCreateSC:
         '''
         Defino os valores padrões das variáveis, criando um objeto com os valores necessários para abrir o caso na fila
         '''
@@ -71,7 +79,11 @@ class Abertura():
         elif info_os.projeto == 'FISERV':
             info_os.projeto = 'FIRST'
 
-        call_id = await self._gerar_id_unico()
+        if meio_captura == 'CHAT':
+            call_id = await self._gerar_id_unico()
+        else:
+            call_id = None
+            
         data_hora_atual = datetime.now()
         data_hora_formatada = data_hora_atual.strftime("%d/%m/%Y %H:%M:%S")
         data_hora_formato_sql_server: str = data_hora_atual.strftime(

@@ -4,13 +4,10 @@ from pydantic import BaseModel, Field
 
 
 class TbProjetoFedexHistoricoBaseSC(BaseModel):
-    telefone_tecnico: Optional[str]
     os: str
     problema_apresentado: Optional[str]
-    ocorrencia: Optional[str]
-    projeto: Optional[str]
-    tipo_atendimento: Optional[str]
     tecnico: Optional[str]
+    callid: Optional[str]
 
 
 class TbProjetoFedexHistoricoCreateSC(TbProjetoFedexHistoricoBaseSC):
@@ -25,5 +22,11 @@ class TbProjetoFedexHistoricoInDbBaseSC(TbProjetoFedexHistoricoBaseSC):
     id: int
 
 
-class TbProjetoFedexHistoricoSC(TbProjetoFedexHistoricoInDbBaseSC):
-    pass
+class TbProjetoFedexHistoricoSC(BaseModel):
+    telefone_tecnico: Optional[str]
+    os: str
+    problema_apresentado: Optional[str]
+    ocorrencia: Optional[str]
+    projeto: Optional[str]
+    tipo_atendimento: Optional[str]
+    tecnico: Optional[str]

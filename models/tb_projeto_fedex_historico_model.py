@@ -10,7 +10,6 @@ class TbProjetoFDHistModel(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     dt_criado = Column(DateTime, default=datetime.now())
     os: str = Column(String(250))
-    nr_atendimento: str = Column(String(250), nullable=True)
     problema_apresentado: str = Column(Text, nullable=True)
     tecnico: str = Column(String(250), nullable=True)
     callid: str = Column(String(250), nullable=True)

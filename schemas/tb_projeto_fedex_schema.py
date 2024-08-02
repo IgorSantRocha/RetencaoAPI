@@ -30,7 +30,7 @@ class TbProjetoFedexBaseSC(BaseModel):
     etapa: str
     tipo: str
     acao_d1: str
-    call_id: str
+    call_id: Optional[str]
     reabertura: Optional[str]
 
 
