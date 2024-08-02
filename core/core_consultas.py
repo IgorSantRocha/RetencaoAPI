@@ -19,7 +19,7 @@ class Consultas:
 
         if cliente:
             cliente = self._valida_cliente(cliente)
-            filters_projeto = filters_projeto.append(
+            filters_projeto.append(
                 {"field": "cliente", "operator": "=", "value": cliente})
 
         projetos = lista_projetos.get_multi_filters(
