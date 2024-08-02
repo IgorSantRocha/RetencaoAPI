@@ -2,10 +2,11 @@ import xmlrpc.client
 import re
 from fastapi import HTTPException, status
 from core.config import settings
+from schemas.auth_schema import AuthResponse
 
 
 class AuthOdoo:
-    async def autentica_usuario(self, usr: str, pwd: str) -> int:
+    async def autentica_usuario(self, usr: str, pwd: str) -> AuthResponse:
         common = xmlrpc.client.ServerProxy(
             '{}/xmlrpc/2/common'.format(settings.odoo_url))
         uid = common.authenticate(
@@ -15,8 +16,25 @@ class AuthOdoo:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED, detail="Usuário ou senha incorretos!"
             )
+        uid_master = common.authenticate(
+            settings.odoo_db, settings.odoo_username, settings.odoo_password, {})
 
-        return uid
+        models = xmlrpc.client.ServerProxy(
+            '{}/xmlrpc/2/object'.format(settings.odoo_url))
+
+        consulta = models.execute_kw(settings.odoo_db, uid_master, settings.odoo_password, 'hr.employee', 'search_read', [
+            [['user_id', '=', uid]]], {'fields': ['user_id', 'name', 'mobile_phone', 'work_email', 'company_id']})
+
+        dict_contulta = consulta[0]
+        resposta = AuthResponse(
+            uid=uid,
+            username=usr,
+            name=dict_contulta['name'],
+            phone=dict_contulta['mobile_phone'],
+            email=dict_contulta['work_email'],
+            cod_base=dict_contulta['company_id'][1]
+        )
+        return resposta
 
     async def cria_usuario(self,
                            usr: str,
