@@ -3,7 +3,7 @@ import logging
 from schemas.apikey_schema import APIKey, APIKeyPerson
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
-from core.core_apikey import get_api_key, busca_meio_captura
+from core.core_apikey import busca_meio_captura
 from schemas.lista_projeto_schema import ListaProjetoBaseSC
 from schemas.ocorrencia_schema import ListaOcorrenciaBaseSC
 from schemas.tipo_atendimento_schema import TipoAtendimentoBaseSC
