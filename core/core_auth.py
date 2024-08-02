@@ -7,20 +7,15 @@ from schemas.auth_schema import AuthResponse
 
 class AuthOdoo:
     async def autentica_usuario(self, usr: str, pwd: str) -> AuthResponse:
-        common = xmlrpc.client.ServerProxy(
-            '{}/xmlrpc/2/common'.format(settings.odoo_url))
-        uid = common.authenticate(
-            settings.odoo_db, usr, pwd, {})
+        # primeiro tento autenticar o usuário com as credenciais passadas
+        uid = await self._auth_odoo(usr, pwd)
 
-        if not uid:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED, detail="Usuário ou senha incorretos!"
-            )
-        uid_master = common.authenticate(
-            settings.odoo_db, settings.odoo_username, settings.odoo_password, {})
+        '''logo com usuário adm para poder consultar a tabela de funcionários 
+        e retornar as informações de cadastro do usuário
+        '''
+        uid_master = await self._auth_odoo(settings.odoo_username, settings.odoo_password)
 
-        models = xmlrpc.client.ServerProxy(
-            '{}/xmlrpc/2/object'.format(settings.odoo_url))
+        models = self._cria_object()
 
         consulta = models.execute_kw(settings.odoo_db, uid_master, settings.odoo_password, 'hr.employee', 'search_read', [
             [['user_id', '=', uid]]], {'fields': ['user_id', 'name', 'mobile_phone', 'work_email', 'company_id']})
@@ -52,15 +47,12 @@ class AuthOdoo:
 
         self._valida_pwd(pwd)
 
-        common = xmlrpc.client.ServerProxy(
-            '{}/xmlrpc/2/common'.format(settings.odoo_url))
+        uid = await self._auth_odoo(usr, pwd)
 
-        uid = common.authenticate(
-            settings.odoo_db, settings.odoo_username, settings.odoo_password, {})
+        models = self._cria_object()
 
-        models = xmlrpc.client.ServerProxy(
-            '{}/xmlrpc/2/object'.format(settings.odoo_url))
-
+        # Consulto o id e o nome da base de acordo com o cod_rep informado.
+        # Para poder vincular o usuário do técnico à base
         company = models.execute_kw(settings.odoo_db, uid, settings.odoo_password, 'res.company', 'search_read', [
             [['name', '=', cod_rep]]], {'fields': ['id', 'name']})
 
@@ -134,3 +126,22 @@ class AuthOdoo:
             )
 
         return True
+
+    async def _auth_odoo(self, usr: str, pwd: str) -> int:
+        common = xmlrpc.client.ServerProxy(
+            '{}/xmlrpc/2/common'.format(settings.odoo_url))
+
+        uid = common.authenticate(
+            settings.odoo_db, usr, pwd, {})
+
+        if not uid:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED, detail="Usuário ou senha incorretos!"
+            )
+        return uid
+
+    def _cria_object() -> xmlrpc.client.ServerProxy:
+        models = xmlrpc.client.ServerProxy(
+            '{}/xmlrpc/2/object'.format(settings.odoo_url))
+
+        return models

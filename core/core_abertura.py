@@ -15,6 +15,7 @@ logger = logging.getLogger(__name__)
 
 class Abertura():
     async def abertura_os(self, info_os: TbProjetoFedexHistoricoSC, meio_captura: str, db: AsyncSession) -> TbProjetoFedexCreateSC:
+        #Crio o objeto com os campos padrões
         obj_abertura = await self.cria_obj_in(info_os, db, meio_captura)
         if meio_captura != 'SYS':
             obj_abertura.atendente_abertura = meio_captura
