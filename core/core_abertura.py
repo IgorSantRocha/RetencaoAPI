@@ -42,6 +42,7 @@ class Abertura():
             logger.info("Realizando o create")
             tb_projeto_fd.create(db=db, obj_in=obj_abertura)
 
+        logger.info("Inserindo informação na tabela de histórico")
         obj_in_hist = TbProjetoFedexHistoricoCreateSC(
             os=obj_abertura.os,
             problema_apresentado=obj_abertura.problema_apresentado,
@@ -117,7 +118,8 @@ class Abertura():
             definicao='',
             status_relatorio='',
             call_id=call_id,
-            reabertura=None
+            reabertura=None,
+            uid=info_os.uid
         )
 
         # STATUS

@@ -13,3 +13,13 @@ class AuthResponse(SCBaseModel):
     phone: str
     email: str
     cod_base: str
+
+
+class AuthCreate(SCBaseModel):
+    username: str
+    pwd: str
+    pwd_confirm: str
+    name: str
+    phone: str
+    email: str
+    cod_base: str

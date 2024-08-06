@@ -32,6 +32,7 @@ class TbProjetoFedexBaseSC(BaseModel):
     acao_d1: str
     call_id: Optional[str]
     reabertura: Optional[str]
+    uid: Optional[int]
 
 
 class TbProjetoFedexCreateSC(TbProjetoFedexBaseSC):

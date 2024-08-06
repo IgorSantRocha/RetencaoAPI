@@ -30,3 +30,4 @@ class TbProjetoFedexHistoricoSC(BaseModel):
     projeto: Optional[str]
     tipo_atendimento: Optional[str]
     tecnico: Optional[str]
+    uid: Optional[int]

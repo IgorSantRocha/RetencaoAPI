@@ -33,3 +33,4 @@ class TbProjetoFDModel(Base):
     acao_d1: str = Column(String(250), nullable=True)
     call_id: str = Column(String(250), nullable=True)
     reabertura = Column("Reabertura", String(2), nullable=True)
+    uid = Column("uid", Integer, nullable=True)

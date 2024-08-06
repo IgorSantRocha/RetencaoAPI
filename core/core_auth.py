@@ -2,13 +2,13 @@ import xmlrpc.client
 import re
 from fastapi import HTTPException, status
 from core.config import settings
-from schemas.auth_schema import AuthResponse
+from schemas.auth_schema import AuthResponse, AuthCreate
 
 
 class AuthOdoo:
     async def autentica_usuario(self, usr: str, pwd: str) -> AuthResponse:
         # primeiro tento autenticar o usuário com as credenciais passadas
-        uid = await self._auth_odoo(usr, pwd)
+        uid = await self._auth_odoo(usr=usr, pwd=pwd)
 
         '''logo com usuário adm para poder consultar a tabela de funcionários 
         e retornar as informações de cadastro do usuário
@@ -31,63 +31,63 @@ class AuthOdoo:
         )
         return resposta
 
-    async def cria_usuario(self,
-                           usr: str,
-                           pwd: str,
-                           pwd_confirm: str,
-                           name: str,
-                           cod_rep: str,
-                           phone: str,
-                           email: str):
+    async def cria_usuario(self, new_usr: AuthCreate) -> AuthResponse:
 
-        if pwd != pwd_confirm:
+        if new_usr.pwd != new_usr.pwd_confirm:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST, detail="As senhas informadas não conferem!"
             )
 
-        self._valida_pwd(pwd)
+        await self._valida_pwd(new_usr.pwd)
 
-        uid = await self._auth_odoo(usr, pwd)
+        uid_master = await self._auth_odoo(settings.odoo_username, settings.odoo_password)
 
         models = self._cria_object()
 
         # Consulto o id e o nome da base de acordo com o cod_rep informado.
         # Para poder vincular o usuário do técnico à base
-        company = models.execute_kw(settings.odoo_db, uid, settings.odoo_password, 'res.company', 'search_read', [
-            [['name', '=', cod_rep]]], {'fields': ['id', 'name']})
+        company = models.execute_kw(settings.odoo_db, uid_master, settings.odoo_password, 'res.company', 'search_read', [
+            [['name', '=', new_usr.cod_base]]], {'fields': ['id', 'name']})
 
         if not company:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail=f"Não foi possível encontrar nenhum REP = {cod_rep}"
+                status_code=status.HTTP_404_NOT_FOUND, detail=f"Não foi possível encontrar nenhum REP = {new_usr.cod_rep}"
             )
 
         context = {'no_reset_password': True}
         id_new = models.execute_kw(
-            settings.odoo_db, uid, settings.odoo_password, 'res.users', 'create', [
+            settings.odoo_db, uid_master, settings.odoo_password, 'res.users', 'create', [
                 {
-                    'name': name,
-                    'login': usr,
+                    'name': new_usr.name,
+                    'login': new_usr.username,
                     'company_ids': [company[0]['id']],
                     'company_id': company[0]['id'],
-                    'password': pwd,
+                    'password': new_usr.pwd,
                     'sel_groups_1_10_11': 10,
                     'lang': 'pt_BR'
                 }], {'context': context})
 
         models.execute_kw(
-            settings.odoo_db, uid, settings.odoo_password, 'hr.employee', 'create', [
+            settings.odoo_db, uid_master, settings.odoo_password, 'hr.employee', 'create', [
                 {
-                    'name': name,
+                    'name': new_usr.name,
                     'company_id': company[0]['id'],
                     'user_id': id_new,
                     'job_title': 'Técnico (courier)',
-                    'mobile_phone': phone,
-                    'work_email': email,
+                    'mobile_phone': new_usr.phone,
+                    'work_email': new_usr.email,
                     'employee_type': 'employee',
                     'marital': 'single'
                 }])
-
-        return id_new
+        response = AuthResponse(
+            uid=id_new,
+            username=new_usr.username,
+            name=new_usr.name,
+            phone=new_usr.phone,
+            email=new_usr.email,
+            cod_base=new_usr.cod_base
+        )
+        return response
 
     async def _valida_pwd(self, pwd):
        # Verifica o comprimento da senha
@@ -140,7 +140,7 @@ class AuthOdoo:
             )
         return uid
 
-    def _cria_object() -> xmlrpc.client.ServerProxy:
+    def _cria_object(self) -> xmlrpc.client.ServerProxy:
         models = xmlrpc.client.ServerProxy(
             '{}/xmlrpc/2/object'.format(settings.odoo_url))
 
