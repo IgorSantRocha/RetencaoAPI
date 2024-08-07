@@ -17,17 +17,24 @@ class AuthOdoo:
 
         models = self._cria_object()
 
-        consulta = models.execute_kw(settings.odoo_db, uid_master, settings.odoo_password, 'hr.employee', 'search_read', [
+        consulta_employee = models.execute_kw(settings.odoo_db, uid_master, settings.odoo_password, 'hr.employee', 'search_read', [
             [['user_id', '=', uid]]], {'fields': ['user_id', 'name', 'mobile_phone', 'work_email', 'company_id']})
 
-        dict_contulta = consulta[0]
+        consulta_user = models.execute_kw(settings.odoo_db, uid_master, settings.odoo_password, 'res.users', 'search_read', [
+            [['id', '=', uid]]], {'fields': ['id', 'name', 'partner_id']})
+
+        consulta_partner = models.execute_kw(settings.odoo_db, uid_master, settings.odoo_password, 'res.partner', 'search_read', [
+            [['id', '=', consulta_user[0]['partner_id'][0]]]], {'fields': ['id', 'name', 'l10n_br_cnpj_cpf']})
+
+        dict_contulta = consulta_employee[0]
         resposta = AuthResponse(
             uid=uid,
             username=usr,
             name=dict_contulta['name'],
             phone=dict_contulta['mobile_phone'],
             email=dict_contulta['work_email'],
-            cod_base=dict_contulta['company_id'][1]
+            cod_base=dict_contulta['company_id'][1],
+            documento=consulta_partner[0]['l10n_br_cnpj_cpf']
         )
         return resposta
 
@@ -63,6 +70,7 @@ class AuthOdoo:
                     'company_ids': [company[0]['id']],
                     'company_id': company[0]['id'],
                     'password': new_usr.pwd,
+                    'l10n_br_cnpj_cpf': new_usr.documento,
                     'sel_groups_1_10_11': 10,
                     'lang': 'pt_BR'
                 }], {'context': context})
@@ -85,7 +93,8 @@ class AuthOdoo:
             name=new_usr.name,
             phone=new_usr.phone,
             email=new_usr.email,
-            cod_base=new_usr.cod_base
+            cod_base=new_usr.cod_base,
+            documento=new_usr.documento
         )
         return response
 

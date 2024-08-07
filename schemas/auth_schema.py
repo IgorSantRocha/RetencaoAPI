@@ -13,6 +13,7 @@ class AuthResponse(SCBaseModel):
     phone: str
     email: str
     cod_base: str
+    documento: str
 
 
 class AuthCreate(SCBaseModel):
@@ -23,3 +24,4 @@ class AuthCreate(SCBaseModel):
     phone: str
     email: str
     cod_base: str
+    documento: str
