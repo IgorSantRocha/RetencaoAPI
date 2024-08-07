@@ -33,6 +33,9 @@ class TbProjetoFedexBaseSC(BaseModel):
     call_id: Optional[str]
     reabertura: Optional[str]
     uid: Optional[int]
+    longitude: Optional[str]
+    latitude: Optional[str]
+    imageurl: Optional[str]
 
 
 class TbProjetoFedexCreateSC(TbProjetoFedexBaseSC):

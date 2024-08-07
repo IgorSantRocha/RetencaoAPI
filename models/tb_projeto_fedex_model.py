@@ -34,3 +34,6 @@ class TbProjetoFDModel(Base):
     call_id: str = Column(String(250), nullable=True)
     reabertura = Column("Reabertura", String(2), nullable=True)
     uid = Column("uid", Integer, nullable=True)
+    longitude = Column("LONGITUDE", String(250))
+    latitude = Column("LATITUDE", String(250))
+    imageurl = Column("IMAGEURL", String(250))

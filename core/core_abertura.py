@@ -119,7 +119,10 @@ class Abertura():
             status_relatorio='',
             call_id=call_id,
             reabertura=None,
-            uid=info_os.uid
+            uid=info_os.uid,
+            latitude=info_os.latitude,
+            longitude=info_os.longitude,
+            imageurl=info_os.imageurl
         )
 
         # STATUS

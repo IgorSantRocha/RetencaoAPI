@@ -31,3 +31,6 @@ class TbProjetoFedexHistoricoSC(BaseModel):
     tipo_atendimento: Optional[str]
     tecnico: Optional[str]
     uid: Optional[int]
+    longitude: Optional[str]
+    latitude: Optional[str]
+    imageurl: Optional[str]
