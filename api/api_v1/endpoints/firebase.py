@@ -1,16 +1,21 @@
 import logging
 import uuid
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from fastapi import File, UploadFile, HTTPException
 from core.config import firebase_bucket
 import os
+from core.core_apikey import busca_meio_captura
+
+from schemas.apikey_schema import APIKeyPerson
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
 
 
 @router.post("/upload/")
-async def upload_image(file: UploadFile = File(...)):
+async def upload_image(
+        api_key: APIKeyPerson = Depends(busca_meio_captura),
+        file: UploadFile = File(...)):
     try:
         # Extrai a extensão do arquivo
         file_extension = os.path.splitext(file.filename)[1]
@@ -29,7 +34,11 @@ async def upload_image(file: UploadFile = File(...)):
 
 
 @router.post("/upload/{imgname}")
-async def upload_image_imgname(imgname: str, file: UploadFile = File(...)):
+async def upload_image_imgname(
+    api_key: APIKeyPerson = Depends(busca_meio_captura),
+    imgname: str = '',
+    file: UploadFile = File(...)
+):
     try:
         # Extrai a extensão do arquivo
         file_extension = os.path.splitext(file.filename)[1]
