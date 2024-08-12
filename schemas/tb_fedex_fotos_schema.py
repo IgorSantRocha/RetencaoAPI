@@ -4,12 +4,12 @@ from pydantic import BaseModel, Field
 
 
 class TbFedexFotosBaseSC(BaseModel):
-    # data_abertura: datetime
     os: str
     longitude: str
     latitude: str
     imageurl: str
     uid: int
+    data_abertura: str
 
 
 class TbFedexFotosCreateSC(TbFedexFotosBaseSC):
@@ -24,7 +24,7 @@ class TbFedexFotosInDbBaseSC(TbFedexFotosBaseSC):
     id: int
 
 
-class TbProjetoFedexHistoricoSC(BaseModel):
+class TbFedexFotosSC(BaseModel):
     data_abertura: datetime
     os: str
     longitude: str

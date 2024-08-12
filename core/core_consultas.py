@@ -2,9 +2,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from schemas.lista_projeto_schema import ListaProjetoBaseSC
 from schemas.tipo_atendimento_schema import TipoAtendimentoBaseSC
 from schemas.ocorrencia_schema import ListaOcorrenciaBaseSC
+from schemas.tb_projeto_fedex_schema import TbProjetoFedexSC
 from crud.crud_lista_projeto import lista_projetos
 from crud.crud_lista_ocorrencia import lista_ocorrencia
 from crud.crud_lista_tipo_atendimento import lista_tipo_atendimento
+from crud.crud_tb_projeto_fd import tb_projeto_fd
 from fastapi import HTTPException
 import re
 
@@ -51,6 +53,11 @@ class Consultas:
                 db=db, filterby='Tipo_Atendimento', filter='Desinstalação')
 
         return tipos
+
+    async def busca_lista_os_por_uid(self, uid: int, db: AsyncSession) -> list[TbProjetoFedexSC]:
+        consulta = tb_projeto_fd.get_recente(db=db, uid=uid)
+
+        return consulta
 
     ##### VALIDAÇÕES #####
     def _valida_cliente(self, cliente: str):

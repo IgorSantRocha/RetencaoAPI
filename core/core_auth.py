@@ -46,6 +46,7 @@ class AuthOdoo:
             )
 
         await self._valida_pwd(new_usr.pwd)
+        await self._valida_username(new_usr.username)
 
         uid_master = await self._auth_odoo(settings.odoo_username, settings.odoo_password)
 
@@ -135,6 +136,21 @@ class AuthOdoo:
             )
 
         return True
+
+    async def _valida_username(self, username: str):
+        # Verifica o comprimento do nome de usuário
+        if len(username) < 6:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="O nome de usuário deve conter pelo menos 6 caracteres!"
+            )
+
+        # Verifica se contém apenas letras, números e underscore
+        if not re.match(r'^[a-zA-Z0-9_]+$', username):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="O nome de usuário deve conter apenas letras, números e underline!"
+            )
 
     async def _auth_odoo(self, usr: str, pwd: str) -> int:
         common = xmlrpc.client.ServerProxy(

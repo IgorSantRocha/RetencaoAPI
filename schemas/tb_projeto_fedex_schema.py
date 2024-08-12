@@ -48,7 +48,13 @@ class TbProjetoFedexUpdateSC(TbProjetoFedexBaseSC):
 
 class TbProjetoFedexInDbBaseSC(TbProjetoFedexBaseSC):
     id: int
+    os: str
+    status: str
+    conclusao_operador: str
 
 
-class TbProjetoFedexSC(TbProjetoFedexInDbBaseSC):
-    pass
+class TbProjetoFedexSC(BaseModel):
+    id: int
+    os: str
+    status: str
+    conclusao_operador: str
