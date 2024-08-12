@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 from core.core_apikey import busca_meio_captura
 from schemas.lista_projeto_schema import ListaProjetoBaseSC
-from schemas.tb_projeto_fedex_schema import TbProjetoFedexSC
+from schemas.tb_projeto_fedex_schema import TbProjetoFedexSC, TbProjetoFedexConsultaOSSC
 from schemas.ocorrencia_schema import ListaOcorrenciaBaseSC
 from schemas.tipo_atendimento_schema import TipoAtendimentoBaseSC
 from core.core_consultas import Consultas
@@ -57,15 +57,26 @@ async def consulta_lista_tipos(
     return await consulta.busca_lista_tipos(projeto, db)
 
 
-@router.get("/OrdensAtendidas/{uid}", response_model=List[TbProjetoFedexSC])
+@router.get("/ordens-atendidas/{uid}", response_model=List[TbProjetoFedexSC])
 async def consulta_ordens_atendidas_pelo_tec(
         uid: int = 0,
         db: Session = Depends(deps.get_db),
         api_key: APIKeyPerson = Depends(busca_meio_captura)
 ) -> Any:
-    """
-    Consulta projetos
-    """
     consulta = Consultas()
     logger.info("Consultando projetos")
     return await consulta.busca_lista_os_por_uid(uid=uid, db=db)
+
+
+@router.get("/detalhes/os/{os}", response_model=TbProjetoFedexConsultaOSSC)
+async def consulta_ordens_atendidas_pelo_tec(
+        os: str,
+        db: Session = Depends(deps.get_db),
+        api_key: APIKeyPerson = Depends(busca_meio_captura)
+) -> Any:
+    """
+    Consulta detalhes OS
+    """
+    consulta = Consultas()
+    logger.info("Consultando projetos")
+    return await consulta.busca_detalhes_os(db=db, os=os)

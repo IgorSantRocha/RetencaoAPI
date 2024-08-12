@@ -58,3 +58,15 @@ class TbProjetoFedexSC(BaseModel):
     os: str
     status: str
     conclusao_operador: str
+
+
+class TbProjetoFedexConsultaOSSC(BaseModel):
+    os: str
+    projeto: str
+    tipo_atendimento: str
+    dt_abertura: datetime
+    status: str
+    ocorrencia: str
+    nr_atendimento: str
+    problema_apresentado: str
+    atendente_fechamento: str

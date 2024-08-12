@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from schemas.lista_projeto_schema import ListaProjetoBaseSC
 from schemas.tipo_atendimento_schema import TipoAtendimentoBaseSC
 from schemas.ocorrencia_schema import ListaOcorrenciaBaseSC
-from schemas.tb_projeto_fedex_schema import TbProjetoFedexSC
+from schemas.tb_projeto_fedex_schema import TbProjetoFedexSC, TbProjetoFedexConsultaOSSC
 from crud.crud_lista_projeto import lista_projetos
 from crud.crud_lista_ocorrencia import lista_ocorrencia
 from crud.crud_lista_tipo_atendimento import lista_tipo_atendimento
@@ -58,6 +58,12 @@ class Consultas:
         consulta = tb_projeto_fd.get_recente(db=db, uid=uid)
 
         return consulta
+
+    async def busca_detalhes_os(self, os: str, db: AsyncSession) -> TbProjetoFedexConsultaOSSC:
+        detalhes: TbProjetoFedexConsultaOSSC = tb_projeto_fd.get_first_by_filter(
+            db=db, filterby='os', filter=os)
+
+        return detalhes
 
     ##### VALIDAÇÕES #####
     def _valida_cliente(self, cliente: str):

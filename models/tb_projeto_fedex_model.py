@@ -37,3 +37,5 @@ class TbProjetoFDModel(Base):
     longitude = Column("LONGITUDE", String(250))
     latitude = Column("LATITUDE", String(250))
     imageurl = Column("IMAGEURL", String(250))
+    nr_atendimento = Column("Nr_Atendimento", String(250))
+    atendente_fechamento = Column("Atendente_Fechamento", String(250))
