@@ -101,7 +101,7 @@ class Abertura():
 
             atendente_abertura=info_os.tecnico,
             retorno_tecnico='Sim' if info_os.ocorrencia in (
-                'Técnico em rota', 'Coleta realizada c/ sucesso', 'Insucesso na visita') else 'Não',
+                'Técnico em rota', 'Coleta realizada c/ sucesso', 'Insucesso na visita', 'Entrega realizada') else 'Não',
             nome_tecnico=info_os.tecnico,
             telefone_tecnico=info_os.telefone_tecnico,
             acao_D29='...',
@@ -128,7 +128,7 @@ class Abertura():
         # STATUS
         if info_os.ocorrencia == 'Técnico em rota':
             obj_in.status = 'SEGUIR ROTA - MENSAGEM ENVIADA'
-        elif info_os.ocorrencia == 'Coleta realizada c/ sucesso':
+        elif info_os.ocorrencia in ('Coleta realizada c/ sucesso', 'Entrega realizada'):
             obj_in.status = 'PEDIDO REALIZADO'
 
         # CONCLUSAO
@@ -136,17 +136,19 @@ class Abertura():
             obj_in.conclusao_operador = 'Enviada mensagem no WhatsApp'
         elif info_os.ocorrencia == 'Coleta realizada c/ sucesso':
             obj_in.conclusao_operador = 'Informação de coleta recebida. Técnico autorizado a seguir rota.'
+        elif info_os.ocorrencia == 'Entrega realizada':
+            obj_in.conclusao_operador = 'Informação recebida. Seguir viagem'
 
         # Definicao
         if info_os.ocorrencia == 'Técnico em rota':
             obj_in.definicao = 'PENDENTE / EM ROTA'
-        elif info_os.ocorrencia == 'Coleta realizada c/ sucesso':
+        elif info_os.ocorrencia in ('Coleta realizada c/ sucesso', 'Entrega realizada'):
             obj_in.definicao = 'PEDIDO REALIZADO'
 
         # status relatorio
         if info_os.ocorrencia == 'Técnico em rota':
             obj_in.status_relatorio = 'PENDENTE / EM ROTA'
-        elif info_os.ocorrencia == 'Coleta realizada c/ sucesso':
+        elif info_os.ocorrencia in ('Coleta realizada c/ sucesso', 'Entrega realizada'):
             obj_in.status_relatorio = 'SEM TRATATIVA DA CENTRAL'
 
         consulta_cliente = lista_projetos.get_multi_filter(

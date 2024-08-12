@@ -2,6 +2,7 @@
 config.py
 core\config.py
 core/config.py
+firebase-adminsdk.JSON
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

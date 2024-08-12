@@ -6,6 +6,20 @@ from typing import Any, Dict, List, Optional, Union
 from fastapi.security.api_key import APIKeyHeader, APIKey
 from pydantic import AnyHttpUrl, AnyUrl, validator
 from pydantic_settings import BaseSettings
+import secrets
+from typing import Any, Dict, List, Optional, Union
+from fastapi.security.api_key import APIKeyHeader, APIKey
+from pydantic import AnyHttpUrl, AnyUrl, validator
+from pydantic_settings import BaseSettings
+import firebase_admin
+from firebase_admin import credentials, storage
+import os
+# Obtém o caminho do diretório do arquivo config.py
+base_dir = os.path.dirname(os.path.abspath(__file__))
+
+
+class IgnoredType:
+    pass
 
 
 class Settings(BaseSettings):
@@ -75,3 +89,17 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+
+'''
+    Configurações do Firebase
+'''
+# Caminho relativo para o arquivo JSON
+firebase_cred_path: str = os.path.join(base_dir, 'firebase-adminsdk.json')
+firebase_cred: credentials.Certificate = credentials.Certificate(
+    firebase_cred_path)
+firebase_admin.initialize_app(firebase_cred, {
+    'storageBucket': 'nome_projeto.appspot.com'
+})
+
+firebase_bucket: IgnoredType = storage.bucket()
