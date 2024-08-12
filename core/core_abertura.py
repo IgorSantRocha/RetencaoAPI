@@ -2,9 +2,11 @@ from datetime import datetime
 from sqlalchemy.ext.asyncio import AsyncSession
 from schemas.tb_projeto_fedex_historico_schema import TbProjetoFedexHistoricoCreateSC, TbProjetoFedexHistoricoSC
 from schemas.tb_projeto_fedex_schema import TbProjetoFedexBaseSC, TbProjetoFedexCreateSC
+from schemas.tb_fedex_fotos_schema import TbFedexFotosCreateSC
 from crud.crud_lista_projeto import lista_projetos
 from crud.crud_tb_projeto_fd import tb_projeto_fd
 from crud.crud_tb_projeto_fd_hist import tb_projeto_fd_hist
+from crud.crud_tb_fedex_fotos import tb_fedex_fotos
 from core.config import settings
 import uuid
 import logging
@@ -50,6 +52,17 @@ class Abertura():
             callid=obj_abertura.call_id
         )
         tb_projeto_fd_hist.create(db=db, obj_in=obj_in_hist)
+
+        obj_foto_e_geo = TbFedexFotosCreateSC(
+            os=obj_abertura.os,
+            imageurl=obj_abertura.imageurl,
+            latitude=obj_abertura.latitude,
+            longitude=obj_abertura.longitude,
+            uid=info_os.uid
+        )
+
+        tb_fedex_fotos.create(db=db,obj_in=obj_foto_e_geo)
+
         return obj_abertura
 
     async def _gerar_id_unico(self) -> str:

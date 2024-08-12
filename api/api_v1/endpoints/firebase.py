@@ -28,7 +28,7 @@ async def upload_image(file: UploadFile = File(...)):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.post("/upload/imgname")
+@router.post("/upload/{imgname}")
 async def upload_image_imgname(imgname: str, file: UploadFile = File(...)):
     try:
         # Extrai a extensão do arquivo
