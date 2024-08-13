@@ -53,20 +53,6 @@ class Abertura():
         )
         tb_projeto_fd_hist.create(db=db, obj_in=obj_in_hist)
 
-        data_hora_atual = datetime.now()
-        data_hora_formato_sql_server: str = data_hora_atual.strftime(
-            "%Y-%m-%d %H:%M:%S.%f")[:-3]
-        obj_foto_e_geo = TbFedexFotosCreateSC(
-            os=obj_abertura.os,
-            imageurl=obj_abertura.imageurl,
-            latitude=obj_abertura.latitude,
-            longitude=obj_abertura.longitude,
-            uid=info_os.uid,
-            data_abertura=data_hora_formato_sql_server
-        )
-
-        tb_fedex_fotos.create(db=db, obj_in=obj_foto_e_geo)
-
         return obj_abertura
 
     async def _gerar_id_unico(self) -> str:

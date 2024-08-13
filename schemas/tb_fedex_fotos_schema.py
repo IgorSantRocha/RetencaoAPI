@@ -16,6 +16,13 @@ class TbFedexFotosCreateSC(TbFedexFotosBaseSC):
     pass
 
 
+class TbFedexFotosUploadSC(BaseModel):
+    os: str
+    longitude: str
+    latitude: str
+    uid: int
+
+
 class TbFedexFotosUpdate(TbFedexFotosBaseSC):
     pass
 
