@@ -1,4 +1,5 @@
 from pydantic import BaseModel as SCBaseModel
+from typing import Literal
 
 
 class Auth(SCBaseModel):
@@ -25,3 +26,18 @@ class AuthCreate(SCBaseModel):
     email: str
     cod_base: str
     documento: str
+
+
+class AuthResetPassword(SCBaseModel):
+    uid: int
+    new_password: str
+    pwd_confirm: str
+
+
+class AuthTokenVerficicacaoCreate(SCBaseModel):
+    username: str
+    enviar_por: Literal['WhatsApp', 'E-mail', 'SMS']
+
+
+class AuthTokenVerficicacaoResponse(SCBaseModel):
+    msg: str

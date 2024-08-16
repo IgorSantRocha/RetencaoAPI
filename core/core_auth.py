@@ -2,7 +2,9 @@ import xmlrpc.client
 import re
 from fastapi import HTTPException, status
 from core.config import settings
-from schemas.auth_schema import AuthResponse, AuthCreate
+from schemas.auth_schema import AuthResponse, AuthCreate, AuthResetPassword, AuthTokenVerficicacaoCreate
+from schemas.auth_schema import AuthTokenVerficicacaoResponse
+import random
 
 
 class AuthOdoo:
@@ -99,6 +101,45 @@ class AuthOdoo:
         )
         return response
 
+    async def altera_senha(self, reset_pwd: AuthResetPassword):
+        await self._valida_pwd(reset_pwd.new_password)
+        if reset_pwd.new_password != reset_pwd.pwd_confirm:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST, detail="As senhas informadas não conferem!"
+            )
+
+        uid_master = await self._auth_odoo(settings.odoo_username, settings.odoo_password)
+
+        models = self._cria_object()
+
+        consulta = models.execute_kw(settings.odoo_db, uid_master, settings.odoo_password, 'res.users', 'write', [
+            [reset_pwd.uid], {'password': reset_pwd.new_password}])
+
+        return reset_pwd
+
+    async def cria_token_verificacao(self, auth_data: AuthTokenVerficicacaoCreate):
+        uid_master = await self._auth_odoo(settings.odoo_username, settings.odoo_password)
+        models = self._cria_object()
+        uids = models.execute_kw(settings.odoo_db, uid_master, settings.odoo_password,
+                                 'res.users', 'search_read', [
+                                     [['login', '=', auth_data.username]]], {'fields': ['id']})
+
+        uid = uids[0]['id']
+
+        token = generate_token()
+        consulta = models.execute_kw(settings.odoo_db, uid_master, settings.odoo_password,
+                                     'user.token.alter.pwd',
+                                     'create', [
+                                         {
+                                             'token': token,
+                                             'uid': uid,
+                                             'token_usado': False
+                                         }])
+        resp = AuthTokenVerficicacaoResponse(
+            msg=f'Token gerado e enviado por {auth_data.enviar_por}')
+
+        return resp
+
     async def _valida_pwd(self, pwd):
        # Verifica o comprimento da senha
         if len(pwd) < 6:
@@ -149,7 +190,7 @@ class AuthOdoo:
         if not re.match(r'^[a-zA-Z0-9_]+$', username):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="O nome de usuário deve conter apenas letras, números e underline!"
+                detail="O nome de usuário deve conter apenas letras, números e underline! (Não use espaços)"
             )
 
     async def _auth_odoo(self, usr: str, pwd: str) -> int:
@@ -170,3 +211,7 @@ class AuthOdoo:
             '{}/xmlrpc/2/object'.format(settings.odoo_url))
 
         return models
+
+
+def generate_token():
+    return random.randint(100000, 999999)
