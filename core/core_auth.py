@@ -1,9 +1,10 @@
+from datetime import datetime
 import xmlrpc.client
 import re
 from fastapi import HTTPException, status
 from core.config import settings
 from schemas.auth_schema import AuthResponse, AuthCreate, AuthResetPassword, AuthTokenVerficicacaoCreate
-from schemas.auth_schema import AuthTokenVerficicacaoResponse
+from schemas.auth_schema import AuthTokenVerficicacaoResponse, AuthTokenValidacaoResponse
 import random
 
 
@@ -124,6 +125,11 @@ class AuthOdoo:
                                  'res.users', 'search_read', [
                                      [['login', '=', auth_data.username]]], {'fields': ['id']})
 
+        if not uids:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Username não encontrado!"
+            )
         uid = uids[0]['id']
 
         token = generate_token()
@@ -139,6 +145,29 @@ class AuthOdoo:
             msg=f'Token gerado e enviado por {auth_data.enviar_por}')
 
         return resp
+
+    async def valida_token_verificacao(self, token: int):
+        uid_master = await self._auth_odoo(settings.odoo_username, settings.odoo_password)
+        models = self._cria_object()
+        consulta = models.execute_kw(settings.odoo_db, uid_master, settings.odoo_password,
+                                     'user.token.alter.pwd', 'search_read', [
+                                         [['token', '=', token],
+                                          ['token_usado', '=', False],
+                                          ['exmpira_em', '>=', datetime.now()]
+                                          ]], {'fields': ['id', 'uid', 'token_usado', 'exmpira_em']})
+
+        if not consulta:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Token não encontrado!"
+            )
+
+        models.execute_kw(settings.odoo_db, uid_master, settings.odoo_password,
+                          'user.token.alter.pwd', 'write', [
+                              [consulta[0]['id']], {'token_usado': True}])
+
+        response = AuthTokenValidacaoResponse(uid=consulta[0]['uid'])
+        return response
 
     async def _valida_pwd(self, pwd):
        # Verifica o comprimento da senha

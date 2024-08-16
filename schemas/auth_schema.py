@@ -41,3 +41,7 @@ class AuthTokenVerficicacaoCreate(SCBaseModel):
 
 class AuthTokenVerficicacaoResponse(SCBaseModel):
     msg: str
+
+
+class AuthTokenValidacaoResponse(SCBaseModel):
+    uid: int

@@ -1,7 +1,7 @@
 import logging
 from fastapi import APIRouter, Depends, status
 from schemas.auth_schema import Auth, AuthResponse, AuthCreate, AuthResetPassword
-from schemas.auth_schema import AuthTokenVerficicacaoCreate, AuthTokenVerficicacaoResponse
+from schemas.auth_schema import AuthTokenVerficicacaoCreate, AuthTokenVerficicacaoResponse, AuthTokenValidacaoResponse
 from core.core_apikey import busca_meio_captura
 from core.core_auth import AuthOdoo
 from schemas.apikey_schema import APIKeyPerson
@@ -52,8 +52,8 @@ async def post_reset_password(auth_data: AuthResetPassword,
 
 
 @router.post('/enviar_token/', response_model=AuthTokenVerficicacaoResponse, status_code=status.HTTP_200_OK,
-             summary='Altera a senha',
-             description='Altera a senha do usuário especificado',
+             summary='Cria e envia o Token',
+             description='Cria o Token e envia através do método escolhido',
              response_description='Senha alterada com sucesso!')
 async def post_enviar_token(auth_data: AuthTokenVerficicacaoCreate,
                             api_key: APIKeyPerson = Depends(
@@ -61,4 +61,17 @@ async def post_enviar_token(auth_data: AuthTokenVerficicacaoCreate,
     logger.info("Gerando e enviando token")
     auth = AuthOdoo()
     response: AuthResetPassword = await auth.cria_token_verificacao(auth_data=auth_data)
+    return response
+
+
+@router.post('/validar_token/', response_model=AuthTokenValidacaoResponse, status_code=status.HTTP_200_OK,
+             summary='Validar Token',
+             description='Valida o Token e retorna o UID do usuário.',
+             response_description='Senha alterada com sucesso!')
+async def post_validar_token(token: int,
+                             api_key: APIKeyPerson = Depends(
+                                 busca_meio_captura)):
+    logger.info("Gerando e enviando token")
+    auth = AuthOdoo()
+    response: AuthTokenValidacaoResponse = await auth.valida_token_verificacao(token=token)
     return response
