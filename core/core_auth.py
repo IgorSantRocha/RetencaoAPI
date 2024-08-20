@@ -1,11 +1,10 @@
 from datetime import datetime
 import xmlrpc.client
-import re
 from fastapi import HTTPException, status
 from core.config import settings
 from schemas.auth_schema import AuthResponse, AuthCreate, AuthResetPassword, AuthTokenVerficicacaoCreate
 from schemas.auth_schema import AuthTokenVerficicacaoResponse, AuthTokenValidacaoResponse, AuthTokenValidacao
-import random
+from utils import valida_pwd, valida_username, generate_token
 
 
 class AuthOdoo:
@@ -48,8 +47,8 @@ class AuthOdoo:
                 status_code=status.HTTP_400_BAD_REQUEST, detail="As senhas informadas não conferem!"
             )
 
-        await self._valida_pwd(new_usr.pwd)
-        await self._valida_username(new_usr.username)
+        valida_pwd(new_usr.pwd)
+        valida_username(new_usr.username)
 
         uid_master = await self._auth_odoo(settings.odoo_username, settings.odoo_password)
 
@@ -103,7 +102,7 @@ class AuthOdoo:
         return response
 
     async def altera_senha(self, reset_pwd: AuthResetPassword):
-        await self._valida_pwd(reset_pwd.new_password)
+        valida_pwd(reset_pwd.new_password)
         if reset_pwd.new_password != reset_pwd.pwd_confirm:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST, detail="As senhas informadas não conferem!"
@@ -186,59 +185,6 @@ class AuthOdoo:
 
         return uid_token
 
-    async def _valida_pwd(self, pwd):
-       # Verifica o comprimento da senha
-        if len(pwd) < 6:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="A senha deve conter pelo menos 6 caracteres!"
-            )
-
-        # Verifica se contém pelo menos uma letra maiúscula
-        if not re.search(r'[A-Z]', pwd):
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="A senha deve conter pelo menos uma letra maiúscula!"
-            )
-
-        # Verifica se contém pelo menos uma letra minúscula
-        if not re.search(r'[a-z]', pwd):
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="A senha deve conter pelo menos uma letra minúscula!"
-            )
-
-        # Verifica se contém pelo menos um número
-        if not re.search(r'[0-9]', pwd):
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="A senha deve conter pelo menos um número!"
-            )
-
-        # Verifica se contém pelo menos um caractere especial
-        if not re.search(r'[!@#\$%\^&\*\(\)_\+\-=\[\]\{\};:\'",<>\./?]', pwd):
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="A senha deve conter pelo menos um caractere especial!"
-            )
-
-        return True
-
-    async def _valida_username(self, username: str):
-        # Verifica o comprimento do nome de usuário
-        if len(username) < 6:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="O nome de usuário deve conter pelo menos 6 caracteres!"
-            )
-
-        # Verifica se contém apenas letras, números e underscore
-        if not re.match(r'^[a-zA-Z0-9_]+$', username):
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="O nome de usuário deve conter apenas letras, números e underline! (Não use espaços)"
-            )
-
     async def _auth_odoo(self, usr: str, pwd: str) -> int:
         common = xmlrpc.client.ServerProxy(
             '{}/xmlrpc/2/common'.format(settings.odoo_url))
@@ -257,7 +203,3 @@ class AuthOdoo:
             '{}/xmlrpc/2/object'.format(settings.odoo_url))
 
         return models
-
-
-def generate_token():
-    return random.randint(100000, 999999)
