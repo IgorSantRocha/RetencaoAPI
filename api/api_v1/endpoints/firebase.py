@@ -15,8 +15,8 @@ logger = logging.getLogger(__name__)
 @router.post("/upload/")
 async def upload_image_imgname(
     os: str = Form(...),
-    longitude: str = Form(...),
     latitude: str = Form(...),
+    longitude: str = Form(...),
     uid: int = Form(...),
     file: UploadFile = File(...),
     api_key: APIKeyPerson = Depends(busca_meio_captura),

@@ -36,6 +36,7 @@ class TbProjetoFedexBaseSC(BaseModel):
     longitude: Optional[str]
     latitude: Optional[str]
     imageurl: Optional[str]
+    unidade: Optional[str]
 
 
 class TbProjetoFedexCreateSC(TbProjetoFedexBaseSC):

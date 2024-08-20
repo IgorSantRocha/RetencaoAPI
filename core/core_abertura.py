@@ -125,7 +125,8 @@ class Abertura():
             uid=info_os.uid,
             latitude=info_os.latitude,
             longitude=info_os.longitude,
-            imageurl=info_os.imageurl
+            imageurl=info_os.imageurl,
+            unidade=info_os.unidade
         )
 
         # STATUS
