@@ -5,6 +5,7 @@ from core.config import settings
 from schemas.auth_schema import AuthResponse, AuthCreate, AuthResetPassword, AuthTokenVerficicacaoCreate
 from schemas.auth_schema import AuthTokenVerficicacaoResponse, AuthTokenValidacaoResponse, AuthTokenValidacao
 from utils import valida_pwd, valida_username, generate_token
+from core.envia_token import EnviaToken
 
 
 class AuthOdoo:
@@ -140,6 +141,15 @@ class AuthOdoo:
                                              'res_users_id': uid,
                                              'token_usado': False
                                          }])
+        envio_token = EnviaToken(
+            email=auth_data.email,
+            phone=auth_data.phone,
+            username=auth_data.username,
+            enviar_por=auth_data.enviar_por
+        )
+
+        envio = await envio_token.envia_token(token=token)
+
         resp = AuthTokenVerficicacaoResponse(
             msg=f'Token gerado e enviado por {auth_data.enviar_por}')
 

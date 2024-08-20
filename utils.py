@@ -56,7 +56,27 @@ def valida_username(self, username: str):
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="O nome de usuário deve conter apenas letras, números e underline! (Não use espaços)"
         )
+    return True
 
 
 def generate_token():
     return random.randint(100000, 999999)
+
+
+def format_whatsapp_number(phone_number):
+    # Remove espaços, traços e parênteses
+    phone_number = phone_number.replace(" ", "").replace(
+        "-", "").replace("(", "").replace(")", "")
+
+    # Remove o símbolo de '+' no começo, se existir
+    if phone_number.startswith("+"):
+        phone_number = phone_number[1:]
+
+    # Se o número não começar com '55', adiciona o '55'
+    if not phone_number.startswith("55"):
+        phone_number = "55" + phone_number
+
+    # Adiciona o sufixo '@s.whatsapp.net'
+    formatted_number = phone_number + "@s.whatsapp.net"
+
+    return formatted_number

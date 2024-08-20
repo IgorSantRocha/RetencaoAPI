@@ -1,5 +1,5 @@
 from pydantic import BaseModel as SCBaseModel
-from typing import Literal
+from typing import Literal, Optional
 
 
 class Auth(SCBaseModel):
@@ -37,7 +37,8 @@ class AuthResetPassword(SCBaseModel):
 class AuthTokenVerficicacaoCreate(SCBaseModel):
     username: str
     enviar_por: Literal['WhatsApp', 'E-mail', 'SMS']
-
+    phone: Optional[str]
+    email: Optional[str]
 
 class AuthTokenVerficicacaoResponse(SCBaseModel):
     msg: str
