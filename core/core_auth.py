@@ -4,7 +4,7 @@ import re
 from fastapi import HTTPException, status
 from core.config import settings
 from schemas.auth_schema import AuthResponse, AuthCreate, AuthResetPassword, AuthTokenVerficicacaoCreate
-from schemas.auth_schema import AuthTokenVerficicacaoResponse, AuthTokenValidacaoResponse
+from schemas.auth_schema import AuthTokenVerficicacaoResponse, AuthTokenValidacaoResponse, AuthTokenValidacao
 import random
 
 
@@ -138,7 +138,7 @@ class AuthOdoo:
                                      'create', [
                                          {
                                              'token': token,
-                                             'uid': uid,
+                                             'res_users_id': uid,
                                              'token_usado': False
                                          }])
         resp = AuthTokenVerficicacaoResponse(
@@ -146,15 +146,16 @@ class AuthOdoo:
 
         return resp
 
-    async def valida_token_verificacao(self, token: int):
+    async def valida_token_verificacao(self, auth_data: AuthTokenValidacao):
         uid_master = await self._auth_odoo(settings.odoo_username, settings.odoo_password)
         models = self._cria_object()
         consulta = models.execute_kw(settings.odoo_db, uid_master, settings.odoo_password,
                                      'user.token.alter.pwd', 'search_read', [
-                                         [['token', '=', token],
+                                         [['token', '=', auth_data.token],
                                           ['token_usado', '=', False],
-                                          ['exmpira_em', '>=', datetime.now()]
-                                          ]], {'fields': ['id', 'uid', 'token_usado', 'exmpira_em']})
+                                          ['expira_em', '>=', datetime.now()]
+                                          ]],
+                                     {'fields': ['id', 'res_users_id', 'token_usado', 'expira_em']})
 
         if not consulta:
             raise HTTPException(
@@ -162,12 +163,28 @@ class AuthOdoo:
                 detail="Token não encontrado!"
             )
 
+        uid_por_username = models.execute_kw(settings.odoo_db, uid_master, settings.odoo_password,
+                                             'res.users', 'search_read', [
+                                                 [['login', '=', auth_data.username]]], {'fields': ['id']})
+
+        uid_por_username = uid_por_username[0]['id']
+
+        uid_token = AuthTokenValidacaoResponse(
+            uid=consulta[0]['res_users_id'][0])
+
+        # valido se o token enviado foi gerado para o mesmo usuário que solicitou a validação
+        if uid_token.uid != uid_por_username:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Token inválido!"
+            )
+
+        # marco o token como usado.
         models.execute_kw(settings.odoo_db, uid_master, settings.odoo_password,
                           'user.token.alter.pwd', 'write', [
                               [consulta[0]['id']], {'token_usado': True}])
 
-        response = AuthTokenValidacaoResponse(uid=consulta[0]['uid'])
-        return response
+        return uid_token
 
     async def _valida_pwd(self, pwd):
        # Verifica o comprimento da senha
