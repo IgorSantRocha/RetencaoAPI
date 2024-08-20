@@ -35,6 +35,7 @@ class Abertura():
                 f'\n' + obj_abertura.problema_apresentado
             obj_abertura.problema_apresentado = novo_hist
 
+            obj_abertura.cliente = consulta_os.cliente or '...'
             obj_abertura.subprojeto = consulta_os.subprojeto or '...'
 
             logger.info("Realizando o update")
