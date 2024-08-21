@@ -80,3 +80,21 @@ def format_whatsapp_number(phone_number):
     formatted_number = phone_number + "@s.whatsapp.net"
 
     return formatted_number
+
+
+def format_sms_number(phone_number):
+    # Remove espaços, traços e parênteses
+    phone_number = phone_number.replace(" ", "").replace(
+        "-", "").replace("(", "").replace(")", "")
+
+    # Remove o símbolo de '+' no começo, se existir
+    if phone_number.startswith("+"):
+        phone_number = phone_number[1:]
+
+    # Se o número começar com '55', remove o '55'
+    if phone_number.startswith("55"):
+        phone_number = phone_number[2:]
+
+    formatted_number = phone_number
+
+    return formatted_number

@@ -1,12 +1,10 @@
 from fastapi import HTTPException, status
 from core.request import RequestEvolutionAPI
 from schemas.auth_schema import AuthTokenVerficicacaoCreate, AuthTokenVerficicacaoResponse
-from utils import format_whatsapp_number
+from utils import format_whatsapp_number, format_sms_number
 from core.config import settings
-import smtplib
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
 from core.email_smtp import EnvioEmailSmtp
+from core.request import RequestClientUnipixAuth, RequestClientUnipixEnvio
 
 
 class EnviaToken(AuthTokenVerficicacaoCreate):
@@ -57,4 +55,15 @@ class EnviaToken(AuthTokenVerficicacaoCreate):
         return response
 
     async def _sms(self, token: int):
-        pass
+        client_auth = RequestClientUnipixAuth()
+        response_auth = await client_auth.send_api_request()
+        access_token_auth = response_auth['access_token']
+
+        headers = {'Authorization': f'Bearer {access_token_auth}'}
+
+        telefone_envio = format_sms_number(self.phone)
+
+        client_envio = RequestClientUnipixEnvio(headers, telefone_envio, token)
+        response_envio = await client_envio.send_api_request()
+
+        return response_envio
