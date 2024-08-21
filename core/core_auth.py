@@ -43,12 +43,12 @@ class AuthOdoo:
 
     async def cria_usuario(self, new_usr: AuthCreate) -> AuthResponse:
 
+        valida_pwd(pwd=new_usr.pwd)
         if new_usr.pwd != new_usr.pwd_confirm:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST, detail="As senhas informadas não conferem!"
             )
 
-        valida_pwd(new_usr.pwd)
         valida_username(new_usr.username)
 
         uid_master = await self._auth_odoo(settings.odoo_username, settings.odoo_password)
@@ -66,18 +66,26 @@ class AuthOdoo:
             )
 
         context = {'no_reset_password': True}
-        id_new = models.execute_kw(
-            settings.odoo_db, uid_master, settings.odoo_password, 'res.users', 'create', [
-                {
-                    'name': new_usr.name,
-                    'login': new_usr.username,
-                    'company_ids': [company[0]['id']],
-                    'company_id': company[0]['id'],
-                    'password': new_usr.pwd,
-                    'l10n_br_cnpj_cpf': new_usr.documento,
-                    'sel_groups_1_10_11': 10,
-                    'lang': 'pt_BR'
-                }], {'context': context})
+        try:
+            id_new = models.execute_kw(
+                settings.odoo_db, uid_master, settings.odoo_password, 'res.users', 'create', [
+                    {
+                        'name': new_usr.name,
+                        'login': new_usr.username,
+                        'company_ids': [company[0]['id']],
+                        'company_id': company[0]['id'],
+                        'password': new_usr.pwd,
+                        'l10n_br_cnpj_cpf': new_usr.documento,
+                        'sel_groups_1_10_11': 10,
+                        'lang': 'pt_BR'
+                    }], {'context': context})
+        except xmlrpc.client.Fault as fer:
+            if fer.faultString == 'The operation cannot be completed: Este CPF/CNPJ já está em uso por outro parceiro!':
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST, detail='Este CPF/CNPJ já está em uso por outro parceiro!')
+
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST, detail=fer.faultString)
 
         models.execute_kw(
             settings.odoo_db, uid_master, settings.odoo_password, 'hr.employee', 'create', [
@@ -91,6 +99,7 @@ class AuthOdoo:
                     'employee_type': 'employee',
                     'marital': 'single'
                 }])
+
         response = AuthResponse(
             uid=id_new,
             username=new_usr.username,

@@ -3,7 +3,7 @@ import re
 import random
 
 
-def valida_pwd(self, pwd):
+def valida_pwd(pwd):
     # Verifica o comprimento da senha
     if len(pwd) < 6:
         raise HTTPException(
@@ -42,7 +42,7 @@ def valida_pwd(self, pwd):
     return True
 
 
-def valida_username(self, username: str):
+def valida_username(username: str):
     # Verifica o comprimento do nome de usuário
     if len(username) < 6:
         raise HTTPException(
