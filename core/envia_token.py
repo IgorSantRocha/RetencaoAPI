@@ -2,6 +2,7 @@ from fastapi import HTTPException, status
 from core.request import RequestEvolutionAPI
 from schemas.auth_schema import AuthTokenVerficicacaoCreate, AuthTokenVerficicacaoResponse
 from utils import format_whatsapp_number
+from core.config import settings
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -38,13 +39,13 @@ class EnviaToken(AuthTokenVerficicacaoCreate):
 
     async def _email(self, token: int):
         # Configurações do servidor
-        smtp_host = 'smtp.hostinger.com'
-        smtp_port = 587
-        email_user = 'sys@c-trends.com.br'
-        email_pass = 'Cr@$#2020'
+        smtp_host = settings.email_smtp_host
+        smtp_port = settings.email_smtp_port
+        email_user = settings.email_user
+        email_pass = settings.email_pass
 
         # Configuração do email
-        de = 'sys@c-trends.com.br'
+        de = email_user
         para = self.email
         assunto = 'Token de alteração de senha'
         corpo = f"""

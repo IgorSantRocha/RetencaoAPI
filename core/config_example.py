@@ -27,6 +27,12 @@ class Settings(BaseSettings):
     API_VERSION: str = '0.0.2'
     SECRET_KEY: str = secrets.token_urlsafe(32)
 
+    '''Config do e-mail'''
+    email_smtp_host = 'smtp.gmail.com'
+    email_smtp_port = 587
+    email_user = ''
+    email_pass = ''
+
     odoo_url = "http://127.0.0.1:8069/"
     odoo_db = "odoo_db"
     odoo_username = 'username_odoo_db'
