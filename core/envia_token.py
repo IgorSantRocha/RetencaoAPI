@@ -75,9 +75,9 @@ class EnviaToken(AuthTokenVerficicacaoCreate):
             texto = msg.as_string()
             server.sendmail(de, para, texto)
             server.quit()
-            print("Email enviado com sucesso!")
+            return "Email enviado com sucesso!"
         except Exception as e:
-            print(f"Falha ao enviar o email: {e}")
+            return f"Falha ao enviar o email: {e}"
 
     async def _sms(self, token: int):
         pass
