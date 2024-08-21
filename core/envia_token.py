@@ -6,6 +6,7 @@ from core.config import settings
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from core.email_smtp import EnvioEmailSmtp
 
 
 class EnviaToken(AuthTokenVerficicacaoCreate):
@@ -38,16 +39,9 @@ class EnviaToken(AuthTokenVerficicacaoCreate):
         return response
 
     async def _email(self, token: int):
-        # Configurações do servidor
-        smtp_host = settings.email_smtp_host
-        smtp_port = settings.email_smtp_port
-        email_user = settings.email_user
-        email_pass = settings.email_pass
 
-        # Configuração do email
-        de = email_user
         para = self.email
-        assunto = 'Token de alteração de senha'
+        assunto = 'Token de alteração - Central Retenção'
         corpo = f"""
         <html>
         <head></head>
@@ -57,27 +51,10 @@ class EnviaToken(AuthTokenVerficicacaoCreate):
         </body>
         </html>
         """
+        client = EnvioEmailSmtp(para, assunto, corpo)
 
-        # Criando a mensagem
-        msg = MIMEMultipart()
-        msg['From'] = de
-        msg['To'] = para
-        msg['Subject'] = assunto
-
-        # Adicionando o corpo do email
-        msg.attach(MIMEText(corpo, 'html'))
-
-        # Enviando o email
-        try:
-            server = smtplib.SMTP(smtp_host, smtp_port)
-            server.starttls()
-            server.login(email_user, email_pass)
-            texto = msg.as_string()
-            server.sendmail(de, para, texto)
-            server.quit()
-            return "Email enviado com sucesso!"
-        except Exception as e:
-            return f"Falha ao enviar o email: {e}"
+        response = await client.envia_email()
+        return response
 
     async def _sms(self, token: int):
         pass
