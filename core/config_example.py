@@ -38,6 +38,16 @@ class Settings(BaseSettings):
     odoo_username = 'username_odoo_db'
     odoo_password = 'password_odoo_db'
 
+    '''Configurações Unipix'''
+    unipix_url_auth = ''
+    unipix_url_envio = ''
+    unipix_username = 'email@email.com.br'
+    unipix_password = '102030'
+
+    '''Configurações EvolutionAPI'''
+    evolution_api_url = ''
+    evolution_api_apikey = ''
+
     # API_KEY = "Sua_chave_vai_aqui" Estou consultando direto do banco de dados agora
     API_KEY_NAME = "access_token"
     api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=False)

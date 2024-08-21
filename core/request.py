@@ -15,7 +15,7 @@ async def log_request_result(prefix, endpoint, method, request_data, res):
 class RequestEvolutionAPI:
     def __init__(self,  instance: str, telefone: str, msg: str, timeout: int = 100) -> None:
         self.method = 'POST'
-        self.url = 'http://192.168.0.213:3000/message/sendText/' + instance
+        self.url = settings.evolution_api_url + instance
         self.request_data = {
             "number": telefone,
             "options": {
@@ -28,7 +28,7 @@ class RequestEvolutionAPI:
             }
         }
         self.headers = {
-            'apikey': 'rJ9aWxBaX82Pn7vC15tlL5ZBoCwCTLtnvj73OxsycfcI1o84vv9Y2Hh2I2jFNKx9iQVUqteUOk4pWI7g'}
+            'apikey': settings.evolution_api_apikey}
         self.timeout = timeout
         inject(carrier=self.headers)
 
