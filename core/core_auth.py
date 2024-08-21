@@ -3,7 +3,7 @@ import xmlrpc.client
 from fastapi import HTTPException, status
 from core.config import settings
 from schemas.auth_schema import AuthResponse, AuthCreate, AuthResetPassword, AuthTokenVerficicacaoCreate
-from schemas.auth_schema import AuthTokenVerficicacaoResponse, AuthTokenValidacaoResponse, AuthTokenValidacao
+from schemas.auth_schema import AuthTokenVerficicacaoResponse, AuthTokenValidacaoResponse, AuthTokenValidacao, AuthTokenVerficicacaoSolic
 from utils import valida_pwd, valida_username, generate_token
 from core.envia_token import EnviaToken
 
@@ -108,6 +108,32 @@ class AuthOdoo:
             email=new_usr.email,
             cod_base=new_usr.cod_base,
             documento=new_usr.documento
+        )
+        return response
+
+    async def busca_info_verificacao(self, username: str):
+        uid_master = await self._auth_odoo(settings.odoo_username, settings.odoo_password)
+
+        models = self._cria_object()
+        uids = models.execute_kw(settings.odoo_db, uid_master, settings.odoo_password,
+                                 'res.users', 'search_read', [
+                                     [['login', '=', username]]], {'fields': ['id']})
+
+        if not uids:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Username não encontrado!"
+            )
+        uid = uids[0]['id']
+
+        consulta_employee = models.execute_kw(settings.odoo_db, uid_master, settings.odoo_password, 'hr.employee', 'search_read', [
+            [['user_id', '=', uid]]], {'fields': ['user_id', 'name', 'mobile_phone', 'work_email', 'company_id']})
+
+        dict_contulta = consulta_employee[0]
+        response = AuthTokenVerficicacaoSolic(
+            username=username,
+            phone=dict_contulta['mobile_phone'],
+            email=dict_contulta['work_email']
         )
         return response
 

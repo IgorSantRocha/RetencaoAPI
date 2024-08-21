@@ -34,11 +34,18 @@ class AuthResetPassword(SCBaseModel):
     pwd_confirm: str
 
 
+class AuthTokenVerficicacaoSolic(SCBaseModel):
+    username: str
+    phone: Optional[str]
+    email: Optional[str]
+
+
 class AuthTokenVerficicacaoCreate(SCBaseModel):
     username: str
     enviar_por: Literal['WhatsApp', 'E-mail', 'SMS']
     phone: Optional[str]
     email: Optional[str]
+
 
 class AuthTokenVerficicacaoResponse(SCBaseModel):
     msg: str

@@ -1,7 +1,7 @@
 import logging
 from fastapi import APIRouter, Depends, status
 from schemas.auth_schema import Auth, AuthResponse, AuthCreate, AuthResetPassword, AuthTokenValidacao
-from schemas.auth_schema import AuthTokenVerficicacaoCreate, AuthTokenVerficicacaoResponse, AuthTokenValidacaoResponse
+from schemas.auth_schema import AuthTokenVerficicacaoCreate, AuthTokenVerficicacaoResponse, AuthTokenValidacaoResponse, AuthTokenVerficicacaoSolic
 from core.core_apikey import busca_meio_captura
 from core.core_auth import AuthOdoo
 from schemas.apikey_schema import APIKeyPerson
@@ -38,16 +38,16 @@ async def post_create_user(auth_data: AuthCreate,
     return response
 
 
-@router.post('/reset_password/', response_model=dict(), status_code=status.HTTP_200_OK,
-             summary='Altera a senha',
-             description='Altera a senha do usuário especificado',
-             response_description='Senha alterada com sucesso!')
-async def post_reset_password(auth_data: AuthResetPassword,
-                              api_key: APIKeyPerson = Depends(
-                                  busca_meio_captura)):
-    logger.info("Resetando senha do usuário")
+@router.get('/info_verificacao/{username}', response_model=AuthTokenVerficicacaoSolic, status_code=status.HTTP_200_OK,
+            summary='Retorna o telefone e e-mail',
+            description='Retorna o telefone e e-mail pelo username para ser usado na verificação'
+            )
+async def get_info_verificacao(username: str,
+                               api_key: APIKeyPerson = Depends(
+                                   busca_meio_captura)):
+    logger.info("Gerando e enviando token")
     auth = AuthOdoo()
-    response: AuthResetPassword = await auth.altera_senha(auth_data)
+    response: AuthTokenValidacaoResponse = await auth.busca_info_verificacao(username)
     return response
 
 
@@ -74,4 +74,17 @@ async def post_validar_token(auth_data: AuthTokenValidacao,
     logger.info("Gerando e enviando token")
     auth = AuthOdoo()
     response: AuthTokenValidacaoResponse = await auth.valida_token_verificacao(auth_data)
+    return response
+
+
+@router.post('/reset_password/', response_model=dict(), status_code=status.HTTP_200_OK,
+             summary='Altera a senha',
+             description='Altera a senha do usuário especificado',
+             response_description='Senha alterada com sucesso!')
+async def post_reset_password(auth_data: AuthResetPassword,
+                              api_key: APIKeyPerson = Depends(
+                                  busca_meio_captura)):
+    logger.info("Resetando senha do usuário")
+    auth = AuthOdoo()
+    response: AuthResetPassword = await auth.altera_senha(auth_data)
     return response
