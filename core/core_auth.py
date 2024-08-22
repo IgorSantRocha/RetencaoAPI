@@ -4,7 +4,7 @@ from fastapi import HTTPException, status
 from core.config import settings
 from schemas.auth_schema import AuthResponse, AuthCreate, AuthResetPassword, AuthTokenVerficicacaoCreate
 from schemas.auth_schema import AuthTokenVerficicacaoResponse, AuthTokenValidacaoResponse, AuthTokenValidacao, AuthTokenVerficicacaoSolic
-from utils import valida_pwd, valida_username, generate_token
+from utils import valida_pwd, valida_username, generate_token, valida_cpf, valida_email
 from core.envia_token import EnviaToken
 
 
@@ -42,14 +42,14 @@ class AuthOdoo:
         return resposta
 
     async def cria_usuario(self, new_usr: AuthCreate) -> AuthResponse:
-
+        valida_username(new_usr.username)
+        valida_email(new_usr.email)
+        valida_cpf(new_usr.documento)
         valida_pwd(pwd=new_usr.pwd)
         if new_usr.pwd != new_usr.pwd_confirm:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST, detail="As senhas informadas não conferem!"
             )
-
-        valida_username(new_usr.username)
 
         uid_master = await self._auth_odoo(settings.odoo_username, settings.odoo_password)
 

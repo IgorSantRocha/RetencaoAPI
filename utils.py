@@ -98,3 +98,47 @@ def format_sms_number(phone_number):
     formatted_number = phone_number
 
     return formatted_number
+
+
+def valida_cpf(cpf: str) -> bool:
+    # Remover caracteres não numéricos
+    cpf = re.sub(r'\D', '', cpf)
+
+    # Verificar se o CPF tem 11 dígitos
+    if len(cpf) != 11:
+        return False
+
+    # Verificar se todos os dígitos são iguais
+    if cpf == cpf[0] * len(cpf):
+        return False
+
+    # Calcular o primeiro dígito verificador
+    soma = sum(int(cpf[i]) * (10 - i) for i in range(9))
+    primeiro_digito = (soma * 10) % 11
+    if primeiro_digito == 10:
+        primeiro_digito = 0
+
+    # Calcular o segundo dígito verificador
+    soma = sum(int(cpf[i]) * (11 - i) for i in range(10))
+    segundo_digito = (soma * 10) % 11
+    if segundo_digito == 10:
+        segundo_digito = 0
+
+    if cpf[-2:] != f"{primeiro_digito}{segundo_digito}":
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="CPF inválido"
+        )
+    # Verificar se os dígitos verificadores estão corretos
+    return True
+
+
+def valida_email(email: str) -> bool:
+    padrao = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
+    if re.match(padrao, email) is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="E-mail inválido"
+        )
+
+    return True
