@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 from pydantic import BaseModel, Field
 
 
@@ -24,7 +24,7 @@ class TbProjetoFedexHistoricoInDbBaseSC(TbProjetoFedexHistoricoBaseSC):
 
 class TbProjetoFedexHistoricoSC(BaseModel):
     telefone_tecnico: Optional[str]
-    os: str
+    oss: List[str]
     problema_apresentado: Optional[str]
     ocorrencia: Optional[str]
     projeto: Optional[str]

@@ -16,43 +16,52 @@ logger = logging.getLogger(__name__)
 
 class Abertura():
     async def abertura_os(self, info_os: TbProjetoFedexHistoricoSC, meio_captura: str, db: AsyncSession) -> TbProjetoFedexCreateSC:
-        # Crio o objeto com os campos padrões
-        obj_abertura = await self.cria_obj_in(info_os, db, meio_captura)
-        if meio_captura != 'SYS':
-            obj_abertura.atendente_abertura = meio_captura
-        # faço uma consulta para saber se a OS já existe e decidir entre update ou insert
-        consulta_os: TbProjetoFedexBaseSC = tb_projeto_fd.get_first_by_filter(
-            db=db, filterby='os', filter=obj_abertura.os)
+        chave: str = ''
+        for os in info_os.oss:
+            chave += os
 
-        if consulta_os:
-            logger.info("Criando modelo para update")
-            dt_abertura_antiga: datetime = consulta_os.dt_abertura
-            data_atual: datetime = datetime.now()
-            if dt_abertura_antiga.date() == data_atual.date():
-                obj_abertura.reabertura = 'S'
+        if len(chave) > 250:
+            chave=chave[:250]
 
-            novo_hist = consulta_os.problema_apresentado + \
-                f'\n' + obj_abertura.problema_apresentado
-            obj_abertura.problema_apresentado = novo_hist
+        for os in info_os.oss:
+            # Crio o objeto com os campos padrões
+            obj_abertura = await self.cria_obj_in(info_os, db, meio_captura, os)
+            obj_abertura.chave = chave
+            if meio_captura != 'SYS':
+                obj_abertura.atendente_abertura = meio_captura
+            # faço uma consulta para saber se a OS já existe e decidir entre update ou insert
+            consulta_os: TbProjetoFedexBaseSC = tb_projeto_fd.get_first_by_filter(
+                db=db, filterby='os', filter=obj_abertura.os)
 
-            obj_abertura.cliente = consulta_os.cliente or '...'
-            obj_abertura.subprojeto = consulta_os.subprojeto or '...'
+            if consulta_os:
+                logger.info("Criando modelo para update")
+                dt_abertura_antiga: datetime = consulta_os.dt_abertura
+                data_atual: datetime = datetime.now()
+                if dt_abertura_antiga.date() == data_atual.date():
+                    obj_abertura.reabertura = 'S'
 
-            logger.info("Realizando o update")
-            tb_projeto_fd.update(
-                db=db, db_obj=consulta_os, obj_in=obj_abertura)
-        else:
-            logger.info("Realizando o create")
-            tb_projeto_fd.create(db=db, obj_in=obj_abertura)
+                novo_hist = consulta_os.problema_apresentado + \
+                    f'\n' + obj_abertura.problema_apresentado
+                obj_abertura.problema_apresentado = novo_hist
 
-        logger.info("Inserindo informação na tabela de histórico")
-        obj_in_hist = TbProjetoFedexHistoricoCreateSC(
-            os=obj_abertura.os,
-            problema_apresentado=obj_abertura.problema_apresentado,
-            tecnico=obj_abertura.nome_tecnico,
-            callid=obj_abertura.call_id
-        )
-        tb_projeto_fd_hist.create(db=db, obj_in=obj_in_hist)
+                obj_abertura.cliente = consulta_os.cliente or '...'
+                obj_abertura.subprojeto = consulta_os.subprojeto or '...'
+
+                logger.info("Realizando o update")
+                tb_projeto_fd.update(
+                    db=db, db_obj=consulta_os, obj_in=obj_abertura)
+            else:
+                logger.info("Realizando o create")
+                tb_projeto_fd.create(db=db, obj_in=obj_abertura)
+
+            logger.info("Inserindo informação na tabela de histórico")
+            obj_in_hist = TbProjetoFedexHistoricoCreateSC(
+                os=obj_abertura.os,
+                problema_apresentado=obj_abertura.problema_apresentado,
+                tecnico=obj_abertura.nome_tecnico,
+                callid=obj_abertura.call_id
+            )
+            tb_projeto_fd_hist.create(db=db, obj_in=obj_in_hist)
 
         return obj_abertura
 
@@ -70,16 +79,16 @@ class Abertura():
 
         return id_unico
 
-    async def cria_obj_in(self, info_os: TbProjetoFedexHistoricoSC, db: AsyncSession, meio_captura: str) -> TbProjetoFedexCreateSC:
+    async def cria_obj_in(self, info_os: TbProjetoFedexHistoricoSC, db: AsyncSession, meio_captura: str, os: str) -> TbProjetoFedexCreateSC:
         '''
         Defino os valores padrões das variáveis, criando um objeto com os valores necessários para abrir o caso na fila
         '''
         logger.info("Criando obj")
         info_os.projeto = info_os.projeto.upper()
 
-        if info_os.projeto != 'CIELO' and info_os.os.startswith('CLC'):
+        if info_os.projeto != 'CIELO' and os.startswith('CLC'):
             info_os.projeto = 'CIELO'
-        elif info_os.projeto == 'CIELO' and not info_os.os.startswith('CLC'):
+        elif info_os.projeto == 'CIELO' and not os.startswith('CLC'):
             info_os.projeto = 'CTBPO'
         elif info_os.projeto == 'FISERV':
             info_os.projeto = 'FIRST'
@@ -94,8 +103,8 @@ class Abertura():
         data_hora_formato_sql_server: str = data_hora_atual.strftime(
             "%Y-%m-%d %H:%M:%S.%f")[:-3]
         obj_in = TbProjetoFedexCreateSC(
-            os=info_os.os,
-            chave=info_os.os,
+            os=os,
+            chave=os,
             dt_abertura=data_hora_formato_sql_server,
             dt_fechamento=data_hora_formato_sql_server,
             problema_apresentado=f'|{data_hora_formatada} - Técnico: {info_os.tecnico} - Ocorrência: {info_os.ocorrencia}  - {info_os.problema_apresentado}',
