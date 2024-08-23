@@ -2,7 +2,7 @@ from datetime import datetime
 import xmlrpc.client
 from fastapi import HTTPException, status
 from core.config import settings
-from schemas.auth_schema import AuthResponse, AuthCreate, AuthResetPassword, AuthTokenVerficicacaoCreate
+from schemas.auth_schema import AuthResponse, AuthCreate, AuthResetPassword, AuthTokenVerficicacaoCreate, AuthAlterCadUser
 from schemas.auth_schema import AuthTokenVerficicacaoResponse, AuthTokenValidacaoResponse, AuthTokenValidacao, AuthTokenVerficicacaoSolic
 from utils import valida_pwd, valida_username, generate_token, valida_cpf, valida_email
 from core.envia_token import EnviaToken
@@ -137,22 +137,6 @@ class AuthOdoo:
         )
         return response
 
-    async def altera_senha(self, reset_pwd: AuthResetPassword):
-        valida_pwd(reset_pwd.new_password)
-        if reset_pwd.new_password != reset_pwd.pwd_confirm:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST, detail="As senhas informadas não conferem!"
-            )
-
-        uid_master = await self._auth_odoo(settings.odoo_username, settings.odoo_password)
-
-        models = self._cria_object()
-
-        consulta = models.execute_kw(settings.odoo_db, uid_master, settings.odoo_password, 'res.users', 'write', [
-            [reset_pwd.uid], {'password': reset_pwd.new_password}])
-
-        return reset_pwd
-
     async def cria_token_verificacao(self, auth_data: AuthTokenVerficicacaoCreate):
         uid_master = await self._auth_odoo(settings.odoo_username, settings.odoo_password)
         models = self._cria_object()
@@ -229,6 +213,45 @@ class AuthOdoo:
                               [consulta[0]['id']], {'token_usado': True}])
 
         return uid_token
+
+    async def altera_senha(self, reset_pwd: AuthResetPassword):
+        valida_pwd(reset_pwd.new_password)
+        if reset_pwd.new_password != reset_pwd.pwd_confirm:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST, detail="As senhas informadas não conferem!"
+            )
+
+        uid_master = await self._auth_odoo(settings.odoo_username, settings.odoo_password)
+
+        models = self._cria_object()
+
+        consulta = models.execute_kw(settings.odoo_db, uid_master, settings.odoo_password, 'res.users', 'write', [
+            [reset_pwd.uid], {'password': reset_pwd.new_password}])
+
+        return reset_pwd
+
+    async def altera_cadastro(self, cad_data: AuthAlterCadUser):
+        uid_master = await self._auth_odoo(settings.odoo_username, settings.odoo_password)
+
+        models = self._cria_object()
+        employee_ids = models.execute_kw(settings.odoo_db, uid_master, settings.odoo_password,
+                                         'hr.employee', 'search_read', [
+                                             [['user_id', '=', cad_data.uid]]], {'fields': ['id']})
+
+        if not employee_ids:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Username não encontrado!"
+            )
+        employee_id = employee_ids[0]['id']
+
+        models.execute_kw(settings.odoo_db, uid_master, settings.odoo_password, 'hr.employee', 'write', [
+            [employee_id], {
+                'name': cad_data.name,
+                'work_email': cad_data.email,
+                'mobile_phone': cad_data.phone
+            }])
+        return cad_data
 
     async def _auth_odoo(self, usr: str, pwd: str) -> int:
         common = xmlrpc.client.ServerProxy(

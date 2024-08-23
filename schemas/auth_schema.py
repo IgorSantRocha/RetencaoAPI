@@ -58,3 +58,10 @@ class AuthTokenValidacao(SCBaseModel):
 
 class AuthTokenValidacaoResponse(SCBaseModel):
     uid: int
+
+
+class AuthAlterCadUser(SCBaseModel):
+    uid: int
+    name: str
+    phone: str
+    email: str

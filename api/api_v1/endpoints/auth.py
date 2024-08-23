@@ -1,6 +1,6 @@
 import logging
 from fastapi import APIRouter, Depends, status
-from schemas.auth_schema import Auth, AuthResponse, AuthCreate, AuthResetPassword, AuthTokenValidacao
+from schemas.auth_schema import Auth, AuthResponse, AuthCreate, AuthResetPassword, AuthTokenValidacao, AuthAlterCadUser
 from schemas.auth_schema import AuthTokenVerficicacaoCreate, AuthTokenVerficicacaoResponse, AuthTokenValidacaoResponse, AuthTokenVerficicacaoSolic
 from core.core_apikey import busca_meio_captura
 from core.core_auth import AuthOdoo
@@ -87,4 +87,17 @@ async def post_reset_password(auth_data: AuthResetPassword,
     logger.info("Resetando senha do usuário")
     auth = AuthOdoo()
     response: AuthResetPassword = await auth.altera_senha(auth_data)
+    return response
+
+
+@router.post('/alter_cad/', response_model=AuthAlterCadUser, status_code=status.HTTP_200_OK,
+             summary='Altera cadastro',
+             description='Altera o cadastro do usuário',
+             response_description='Cadastro alterado com sucesso!')
+async def post_alter_cad(auth_data: AuthAlterCadUser,
+                         api_key: APIKeyPerson = Depends(
+                             busca_meio_captura)):
+    logger.info("Alterando cadastro do usuário")
+    auth = AuthOdoo()
+    response: AuthResetPassword = await auth.altera_cadastro(auth_data)
     return response
