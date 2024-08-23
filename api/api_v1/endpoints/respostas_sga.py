@@ -15,10 +15,9 @@ logger = logging.getLogger(__name__)
              summary='Envia resposta 0800',
              description='Envia resposta do 0800 via SMS',
              response_description='Mensagem enviada!')
-async def post_abertura_chatbot(sms_data: Sms,
-                                api_key: APIKeyPerson = Depends(
-                                    busca_meio_captura),
-                                db: Session = Depends(deps.get_db)):
+async def post_resposta_sms(sms_data: Sms,
+                            api_key: APIKeyPerson = Depends(
+                                busca_meio_captura)):
     logger.info("iniciando envio da resposta")
 
     # meio_captura = api_key.meio_abertura
