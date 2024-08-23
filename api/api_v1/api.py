@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from api.api_v1.endpoints import consultas, abertura, auth, firebase
+from api.api_v1.endpoints import consultas, abertura, auth, firebase, respostas_sga
 
 api_router = APIRouter()
 api_router.include_router(
@@ -14,3 +14,6 @@ api_router.include_router(
 
 api_router.include_router(
     firebase.router, prefix="/firebase", tags=["Firebase Upload"])
+
+api_router.include_router(
+    respostas_sga.router, prefix="/respostas", tags=["Respostas SGA"])

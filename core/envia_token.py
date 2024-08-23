@@ -4,7 +4,7 @@ from schemas.auth_schema import AuthTokenVerficicacaoCreate, AuthTokenVerficicac
 from utils import format_whatsapp_number, format_sms_number
 from core.config import settings
 from core.email_smtp import EnvioEmailSmtp
-from core.request import RequestClientUnipixAuth, RequestClientUnipixEnvio
+from core.request import RequestClientUnipixAuth, RequestClientUnipixEnvioToken
 
 
 class EnviaToken(AuthTokenVerficicacaoCreate):
@@ -63,7 +63,8 @@ class EnviaToken(AuthTokenVerficicacaoCreate):
 
         telefone_envio = format_sms_number(self.phone)
 
-        client_envio = RequestClientUnipixEnvio(headers, telefone_envio, token)
+        client_envio = RequestClientUnipixEnvioToken(
+            headers, telefone_envio, token)
         response_envio = await client_envio.send_api_request()
 
         return response_envio
