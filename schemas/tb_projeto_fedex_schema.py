@@ -71,3 +71,7 @@ class TbProjetoFedexConsultaOSSC(BaseModel):
     nr_atendimento: str
     problema_apresentado: str
     atendente_fechamento: str
+
+
+class TbProjetoFedexUpdateCallidSC(BaseModel):
+    call_id: Optional[str] = None

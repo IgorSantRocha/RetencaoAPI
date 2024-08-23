@@ -13,3 +13,4 @@ class TbProjetoFDHistModel(Base):
     problema_apresentado: str = Column(Text, nullable=True)
     tecnico: str = Column(String(250), nullable=True)
     callid: str = Column(String(250), nullable=True)
+    ip = Column("IP", String(250), nullable=True)

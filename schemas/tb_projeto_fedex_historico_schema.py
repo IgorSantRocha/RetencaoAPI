@@ -14,8 +14,9 @@ class TbProjetoFedexHistoricoCreateSC(TbProjetoFedexHistoricoBaseSC):
     pass
 
 
-class TbProjetoFedexHistoricoUpdate(TbProjetoFedexHistoricoBaseSC):
-    pass
+class TbProjetoFedexHistoricoUpdate(BaseModel):
+    os: str
+    ip: str
 
 
 class TbProjetoFedexHistoricoInDbBaseSC(TbProjetoFedexHistoricoBaseSC):

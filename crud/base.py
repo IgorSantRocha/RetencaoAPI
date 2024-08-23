@@ -122,6 +122,9 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
             elif operator == 'like':
                 query = query.filter(
                     getattr(self.model, filter_name).like(f"%{filter_value}%"))
+            elif operator == 'is_null':
+                query = query.filter(
+                    getattr(self.model, filter_name).is_(None))
             else:
                 # Handle other operators as needed
                 pass
