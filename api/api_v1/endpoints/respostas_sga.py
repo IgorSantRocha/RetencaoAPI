@@ -19,6 +19,7 @@ logger = logging.getLogger(__name__)
              description='Envia resposta do 0800 via SMS',
              response_description='Mensagem enviada!')
 async def post_resposta_sms(sms_data: Sms,
+                            db: Session = Depends(deps.get_db),
                             api_key: APIKeyPerson = Depends(
                                 busca_meio_captura)):
     logger.info("iniciando envio da resposta")
@@ -26,7 +27,7 @@ async def post_resposta_sms(sms_data: Sms,
     # meio_captura = api_key.meio_abertura
     resposta = RespostaSMS()
 
-    return await resposta.enviar(sms_data)
+    return await resposta.enviar(sms_data, db)
 
 
 @router.post('/WPP/', response_model=ResponseEvolutionSC, status_code=status.HTTP_202_ACCEPTED,

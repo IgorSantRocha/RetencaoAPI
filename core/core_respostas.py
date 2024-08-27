@@ -14,7 +14,15 @@ from crud.crud_tb_projeto_fd import tb_projeto_fd_callid
 
 
 class RespostaSMS():
-    async def enviar(self, sms_data: Sms):
+    def _monta_txt_resposta_sms(self, os: str, conclusao: str, obs: str, protocolo_aut: bool, protocolo: str):
+        '''Esta função faz apenas um concatenar das variáveis, montando o texto que será enviado no WPP'''
+        enter = "\n"
+        txt_retorno = f"Retorno da OS: {os}{enter}Observações:{enter}{conclusao}{enter}{obs}"
+        if protocolo_aut:
+            txt_retorno = f'{txt_retorno}{enter}Anote o protocolo: {protocolo}'
+        return txt_retorno
+
+    async def enviar(self, sms_data: Sms, db: AsyncSession):
         client_auth = RequestClientUnipixAuth()
         response_auth = await client_auth.send_api_request()
         access_token_auth = response_auth['access_token']
@@ -22,12 +30,22 @@ class RespostaSMS():
         headers = {'Authorization': f'Bearer {access_token_auth}'}
 
         telefone_envio = format_sms_number(sms_data.telefone)
-        mensagem_resposta = f'Retorno da OS: {sms_data.os}\n{sms_data.conclusao}\n{sms_data.obs_atendente}'
+        tb_op = tb_fedex_operacional.get_last_by_filters(
+            db=db,
+            filters={'codigo': {'operator': '==', 'value': sms_data.codigo_conclusao}})
+
+        txt = self._monta_txt_resposta_sms(
+            os=sms_data.os,
+            conclusao=tb_op.conclusao_operador,
+            obs=sms_data.obs_atendente,
+            protocolo_aut=tb_op.protocolo,
+            protocolo=sms_data.protocolo
+        )
 
         client_envio = RequestClientUnipixEnvio(
             headers=headers,
             telefone=telefone_envio,
-            msg=mensagem_resposta,
+            msg=txt,
             centroCustoId=293,  # Central de retenção
             produtoId=34,
             nome_envio=f'Retorno da OS 0800'

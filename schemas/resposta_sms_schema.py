@@ -5,5 +5,6 @@ from typing import Literal, Optional
 class Sms(SCBaseModel):
     os: str
     telefone: str
-    conclusao: str
+    codigo_conclusao: str
     obs_atendente: str
+    protocolo: str
