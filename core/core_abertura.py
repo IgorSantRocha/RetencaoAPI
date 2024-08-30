@@ -16,12 +16,12 @@ logger = logging.getLogger(__name__)
 
 class Abertura():
     async def abertura_os(self, info_os: TbProjetoFedexHistoricoSC, meio_captura: str, db: AsyncSession) -> TbProjetoFedexCreateSC:
-        chave: str = ''
-        for os in info_os.oss:
-            chave += os
+        chave: str = await self._gerar_id_unico()
+        # for os in info_os.oss:
+        #    chave += os
 
-        if len(chave) > 250:
-            chave=chave[:250]
+        # if len(chave) > 250:
+        #    chave = chave[:250]
 
         for os in info_os.oss:
             # Crio o objeto com os campos padrões
