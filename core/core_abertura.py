@@ -2,11 +2,9 @@ from datetime import datetime
 from sqlalchemy.ext.asyncio import AsyncSession
 from schemas.tb_projeto_fedex_historico_schema import TbProjetoFedexHistoricoCreateSC, TbProjetoFedexHistoricoSC
 from schemas.tb_projeto_fedex_schema import TbProjetoFedexBaseSC, TbProjetoFedexCreateSC
-from schemas.tb_fedex_fotos_schema import TbFedexFotosCreateSC
 from crud.crud_lista_projeto import lista_projetos
 from crud.crud_tb_projeto_fd import tb_projeto_fd
 from crud.crud_tb_projeto_fd_hist import tb_projeto_fd_hist
-from crud.crud_tb_fedex_fotos import tb_fedex_fotos
 from core.config import settings
 import uuid
 import logging
@@ -22,6 +20,13 @@ class Abertura():
 
         # if len(chave) > 250:
         #    chave = chave[:250]
+
+        # Regra para colocar uma informação no final da OBS para o caso de a abertura ter mais de uma OS
+        obs_oss_agregadas = ''
+        if len(info_os.oss) > 1:
+            qtd_oss: int = len(info_os.oss)-1
+            # obs_oss_agregadas = f'\n\n ! ATENÇÃO !\nOS agregada a outra(s) {qtd_oss}.\nOs principal: {info_os.oss[0]}'
+            obs_oss_agregadas = f'\n\n ! ATENÇÃO ! OS agregada a outra(s) {qtd_oss}. Os principal: {info_os.oss[0]}'
 
         for os in info_os.oss:
             # Crio o objeto com os campos padrões
@@ -41,7 +46,7 @@ class Abertura():
                     obj_abertura.reabertura = 'S'
 
                 novo_hist = consulta_os.problema_apresentado + \
-                    f'\n' + obj_abertura.problema_apresentado
+                    f'\n' + obj_abertura.problema_apresentado+obs_oss_agregadas
                 obj_abertura.problema_apresentado = novo_hist
 
                 obj_abertura.cliente = consulta_os.cliente or '...'
@@ -51,6 +56,7 @@ class Abertura():
                 tb_projeto_fd.update(
                     db=db, db_obj=consulta_os, obj_in=obj_abertura)
             else:
+                obj_abertura.problema_apresentado += obs_oss_agregadas
                 logger.info("Realizando o create")
                 tb_projeto_fd.create(db=db, obj_in=obj_abertura)
 
