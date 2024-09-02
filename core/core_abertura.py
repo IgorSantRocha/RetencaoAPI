@@ -26,7 +26,7 @@ class Abertura():
         if len(info_os.oss) > 1:
             qtd_oss: int = len(info_os.oss)-1
             # obs_oss_agregadas = f'\n\n ! ATENÇÃO !\nOS agregada a outra(s) {qtd_oss}.\nOs principal: {info_os.oss[0]}'
-            obs_oss_agregadas = f'\n\n ! ATENÇÃO ! OS agregada a outra(s) {qtd_oss}. Os principal: {info_os.oss[0]}'
+            obs_oss_agregadas = f'\n\n ! ATENÇÃO ! OS agregada a {qtd_oss} outra(s). Os principal: {info_os.oss[0]}'
 
         for os in info_os.oss:
             # Crio o objeto com os campos padrões
