@@ -2,6 +2,7 @@ from crud.base import CRUDBase
 from models.tb_projeto_fedex_model import TbProjetoFDModel
 from schemas.tb_projeto_fedex_schema import TbProjetoFedexCreateSC, TbProjetoFedexSC, TbProjetoFedexUpdateCallidSC
 from sqlalchemy.orm import Session
+from sqlalchemy import desc
 from datetime import datetime, timedelta
 
 
@@ -12,7 +13,7 @@ class CRUDItem(CRUDBase[TbProjetoFDModel, TbProjetoFedexCreateSC, TbProjetoFedex
         consulta = db.query(self.model).filter(
             self.model.uid == uid,
             self.model.dt_abertura >= hora_dif
-        ).all()
+        ).order_by(desc(self.model.dt_fechamento)).all()
 
         return consulta
 

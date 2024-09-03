@@ -52,6 +52,7 @@ class TbProjetoFedexInDbBaseSC(TbProjetoFedexBaseSC):
     os: str
     status: str
     conclusao_operador: str
+    dt_fechamento: Optional[datetime]
 
 
 class TbProjetoFedexSC(BaseModel):
@@ -59,6 +60,7 @@ class TbProjetoFedexSC(BaseModel):
     os: str
     status: str
     conclusao_operador: str
+    dt_fechamento: Optional[datetime]
 
 
 class TbProjetoFedexConsultaOSSC(BaseModel):
