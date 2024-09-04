@@ -70,9 +70,9 @@ class TbProjetoFedexConsultaOSSC(BaseModel):
     dt_abertura: datetime
     status: str
     ocorrencia: str
-    nr_atendimento: str
+    nr_atendimento: Optional[str]
     problema_apresentado: str
-    atendente_fechamento: str
+    atendente_fechamento: Optional[str]
 
 
 class TbProjetoFedexUpdateCallidSC(BaseModel):

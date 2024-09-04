@@ -1,5 +1,6 @@
-from pydantic import BaseModel as SCBaseModel
+from pydantic import BaseModel as SCBaseModel, constr, Field, validator
 from typing import Literal, Optional
+import re
 
 
 class Auth(SCBaseModel):
@@ -18,8 +19,10 @@ class AuthResponse(SCBaseModel):
 
 
 class AuthCreate(SCBaseModel):
-    username: str
-    pwd: str
+    username: str = Field('Exemplo_01', min_length=6,
+                          description="Deve ter no mínimo 6 caracteres e conter apenas letras, números e underline.")
+    pwd: str = Field('Exemplo@1', min_length=6,
+                     description="Deve ter no mínimo 6 caracteres e incluir letras maiúsculas, minúsculas, números e caracteres especiais.")
     pwd_confirm: str
     name: str
     phone: str
@@ -30,7 +33,8 @@ class AuthCreate(SCBaseModel):
 
 class AuthResetPassword(SCBaseModel):
     uid: int
-    new_password: str
+    new_password: str = Field('Exemplo@1', min_length=6,
+                              description="Deve ter no mínimo 6 caracteres e incluir letras maiúsculas, minúsculas, números e caracteres especiais.")
     pwd_confirm: str
 
 

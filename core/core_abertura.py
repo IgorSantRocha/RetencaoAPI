@@ -15,18 +15,20 @@ logger = logging.getLogger(__name__)
 class Abertura():
     async def abertura_os(self, info_os: TbProjetoFedexHistoricoSC, meio_captura: str, db: AsyncSession) -> TbProjetoFedexCreateSC:
         chave: str = await self._gerar_id_unico()
-        # for os in info_os.oss:
-        #    chave += os
-
-        # if len(chave) > 250:
-        #    chave = chave[:250]
+        lista_os: str = f'\n'
+        for os in info_os.oss:
+            if os == info_os.oss[0]:
+                lista_os += f'{os}-(OS principal)\n'
+            else:
+                lista_os += f'{os}\n'
 
         # Regra para colocar uma informação no final da OBS para o caso de a abertura ter mais de uma OS
         obs_oss_agregadas = ''
         if len(info_os.oss) > 1:
             qtd_oss: int = len(info_os.oss)-1
             # obs_oss_agregadas = f'\n\n ! ATENÇÃO !\nOS agregada a outra(s) {qtd_oss}.\nOs principal: {info_os.oss[0]}'
-            obs_oss_agregadas = f'\n\n ! ATENÇÃO ! OS agregada a {qtd_oss} outra(s). Os principal: {info_os.oss[0]}'
+            # obs_oss_agregadas = f'\n\n ! ATENÇÃO ! OS agregada a {qtd_oss} outra(s). Os principal: {info_os.oss[0]}'
+            obs_oss_agregadas = f'\n\n! ATENÇÃO ! OS agregada a {qtd_oss} outra(s).{lista_os}'
 
         for os in info_os.oss:
             # Crio o objeto com os campos padrões
