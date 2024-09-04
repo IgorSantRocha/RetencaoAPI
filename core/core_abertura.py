@@ -18,7 +18,7 @@ class Abertura():
         lista_os: str = f'\n'
         for os in info_os.oss:
             if os == info_os.oss[0]:
-                lista_os += f'{os}-(OS principal)\n'
+                lista_os += f'{os} - (OS principal)\n'
             else:
                 lista_os += f'{os}\n'
 
