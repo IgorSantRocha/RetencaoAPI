@@ -73,6 +73,7 @@ class TbProjetoFedexConsultaOSSC(BaseModel):
     nr_atendimento: Optional[str]
     problema_apresentado: str
     atendente_fechamento: Optional[str]
+    imageurl: Optional[str]
 
 
 class TbProjetoFedexUpdateCallidSC(BaseModel):
