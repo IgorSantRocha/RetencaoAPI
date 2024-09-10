@@ -74,8 +74,8 @@ class TbProjetoFedexConsultaOSSC(BaseModel):
     problema_apresentado: str
     atendente_fechamento: Optional[str]
     imageurl: Optional[str]
-    longitude: Optional[str]
     latitude: Optional[str]
+    longitude: Optional[str]
 
 
 class TbProjetoFedexUpdateCallidSC(BaseModel):
