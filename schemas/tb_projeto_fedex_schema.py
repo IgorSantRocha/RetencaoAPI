@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 
 class TbProjetoFedexBaseSC(BaseModel):
@@ -74,6 +74,8 @@ class TbProjetoFedexConsultaOSSC(BaseModel):
     problema_apresentado: str
     atendente_fechamento: Optional[str]
     imageurl: Optional[str]
+    longitude: Optional[str]
+    latitude: Optional[str]
 
 
 class TbProjetoFedexUpdateCallidSC(BaseModel):
