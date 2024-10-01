@@ -34,10 +34,10 @@ class AuthOdoo:
             uid=uid,
             username=usr,
             name=dict_contulta['name'],
-            phone=dict_contulta['mobile_phone'],
+            phone=dict_contulta['mobile_phone'] if dict_contulta['mobile_phone'] else '',
             email=dict_contulta['work_email'],
             cod_base=dict_contulta['company_id'][1],
-            documento=consulta_partner[0]['l10n_br_cnpj_cpf']
+            documento=consulta_partner[0]['l10n_br_cnpj_cpf'] if consulta_partner[0]['l10n_br_cnpj_cpf'] else ''
         )
         return resposta
 
@@ -110,6 +110,35 @@ class AuthOdoo:
             documento=new_usr.documento
         )
         return response
+
+    async def deleta_usuario(self, usr: str, pwd: str) -> int:
+        # primeiro tento autenticar o usuário com as credenciais passadas
+        uid = await self._auth_odoo(usr=usr, pwd=pwd)
+
+        '''logo com usuário adm para poder consultar a tabela de funcionários 
+        e retornar as informações de cadastro do usuário
+        '''
+        uid_master = await self._auth_odoo(settings.odoo_username, settings.odoo_password)
+
+        models = self._cria_object()
+
+        consulta_employee = models.execute_kw(settings.odoo_db, uid_master, settings.odoo_password, 'hr.employee', 'search_read', [
+            [['user_id', '=', uid]]], {'fields': ['user_id', 'id', 'mobile_phone', 'work_email', 'company_id']})
+
+        consulta_user = models.execute_kw(settings.odoo_db, uid_master, settings.odoo_password, 'res.users', 'search_read', [
+            [['id', '=', uid]]], {'fields': ['id', 'name', 'partner_id']})
+
+        consulta_partner = models.execute_kw(settings.odoo_db, uid_master, settings.odoo_password, 'res.partner', 'search_read', [
+            [['id', '=', consulta_user[0]['partner_id'][0]]]], {'fields': ['id', 'name', 'l10n_br_cnpj_cpf']})
+
+        models.execute_kw(settings.odoo_db, uid_master, settings.odoo_password,
+                          'res.users', 'unlink', [[consulta_user[0]['id']]])
+        models.execute_kw(settings.odoo_db, uid_master, settings.odoo_password,
+                          'res.partner', 'unlink', [[consulta_partner[0]['id']]])
+        models.execute_kw(settings.odoo_db, uid_master, settings.odoo_password,
+                          'hr.employee', 'unlink', [[consulta_employee[0]['id']]])
+
+        return uid
 
     async def busca_info_verificacao(self, username: str):
         uid_master = await self._auth_odoo(settings.odoo_username, settings.odoo_password)

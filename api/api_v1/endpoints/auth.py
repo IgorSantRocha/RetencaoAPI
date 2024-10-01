@@ -101,3 +101,17 @@ async def post_alter_cad(auth_data: AuthAlterCadUser,
     auth = AuthOdoo()
     response: AuthResetPassword = await auth.altera_cadastro(auth_data)
     return response
+
+
+@router.post('/delete/', response_model=int, status_code=status.HTTP_200_OK,
+             summary='Deleta o usuário',
+             description='Deleta o usuário e todas as dependencias',
+             response_description='Usuário deletado')
+async def post_delete(auth_data: Auth,
+                      api_key: APIKeyPerson = Depends(
+                          busca_meio_captura)):
+    logger.info("Deletando usuário")
+    auth = AuthOdoo()
+    response: AuthResponse = await auth.deleta_usuario(
+        usr=auth_data.username, pwd=auth_data.password)
+    return response
