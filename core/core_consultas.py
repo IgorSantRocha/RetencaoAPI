@@ -27,6 +27,11 @@ class Consultas:
         projetos = lista_projetos.get_multi_filters(
             db=db, filters=filters_projeto)
 
+        for projeto in projetos:
+            if projeto.projeto == 'FIRST':
+                projeto.projeto = 'FISERV'
+                break
+
         return projetos
 
     async def busca_lista_ocorrencias(self, projeto: str, db: AsyncSession) -> list[ListaOcorrenciaBaseSC]:
@@ -46,6 +51,9 @@ class Consultas:
         return ocorrencias
 
     async def busca_lista_tipos(self, projeto: str, db: AsyncSession) -> list[TipoAtendimentoBaseSC]:
+        if projeto == 'FISERV':
+            projeto = 'FIRST'
+
         if projeto not in ('CTB', 'CTBPO', 'CIELO'):
             tipos = lista_tipo_atendimento.get_multi(db=db)
         else:
