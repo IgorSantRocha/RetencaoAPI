@@ -15,6 +15,7 @@ class AuthResponse(SCBaseModel):
     phone: str
     email: str
     cod_base: str
+    nome_unidade: str
     documento: str
 
 
@@ -28,6 +29,7 @@ class AuthCreate(SCBaseModel):
     phone: str
     email: str
     cod_base: str
+    nome_unidade: str
     documento: str
 
 

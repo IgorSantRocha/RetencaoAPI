@@ -21,7 +21,7 @@ class AuthOdoo:
         models = self._cria_object()
 
         consulta_employee = models.execute_kw(settings.odoo_db, uid_master, settings.odoo_password, 'hr.employee', 'search_read', [
-            [['user_id', '=', uid]]], {'fields': ['user_id', 'name', 'mobile_phone', 'work_email', 'company_id']})
+            [['user_id', '=', uid]]], {'fields': ['user_id', 'name', 'mobile_phone', 'work_email', 'company_id', 'job_title']})
 
         consulta_user = models.execute_kw(settings.odoo_db, uid_master, settings.odoo_password, 'res.users', 'search_read', [
             [['id', '=', uid]]], {'fields': ['id', 'name', 'partner_id']})
@@ -37,7 +37,8 @@ class AuthOdoo:
             phone=dict_contulta['mobile_phone'] if dict_contulta['mobile_phone'] else '',
             email=dict_contulta['work_email'],
             cod_base=dict_contulta['company_id'][1],
-            documento=consulta_partner[0]['l10n_br_cnpj_cpf'] if consulta_partner[0]['l10n_br_cnpj_cpf'] else ''
+            documento=consulta_partner[0]['l10n_br_cnpj_cpf'] if consulta_partner[0]['l10n_br_cnpj_cpf'] else '',
+            nome_unidade=dict_contulta['job_title']
         )
         return resposta
 
@@ -93,10 +94,10 @@ class AuthOdoo:
                     'name': new_usr.name,
                     'company_id': company[0]['id'],
                     'user_id': id_new,
-                    'job_title': 'Técnico (courier)',
+                    'job_title': new_usr.nome_unidade,
                     'mobile_phone': new_usr.phone,
                     'work_email': new_usr.email,
-                    'employee_type': 'employee',
+                    'employee_type': 'freelance',
                     'marital': 'single'
                 }])
 
@@ -107,7 +108,8 @@ class AuthOdoo:
             phone=new_usr.phone,
             email=new_usr.email,
             cod_base=new_usr.cod_base,
-            documento=new_usr.documento
+            documento=new_usr.documento,
+            nome_unidade=new_usr.nome_unidade
         )
         return response
 
