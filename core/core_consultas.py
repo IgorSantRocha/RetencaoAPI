@@ -71,6 +71,9 @@ class Consultas:
         detalhes: TbProjetoFedexConsultaOSSC = tb_projeto_fd.get_first_by_filter(
             db=db, filterby='os', filter=os)
 
+        if detalhes.status == '...':
+            detalhes.status = 'Aguardando tratativa'
+
         return detalhes
 
     ##### VALIDAÇÕES #####
