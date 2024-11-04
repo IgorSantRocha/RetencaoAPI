@@ -1,6 +1,6 @@
 from crud.base import CRUDBase
-from models.tb_retencaoapi_tokens_model import RetencaoAPITokensModel
-from schemas.tb_retencaoapi_tokens_schema import RetencaoAPITokensCreateSC, RetencaoAPITokensUpdateSC
+from models.api_v1.tb_retencaoapi_tokens_model import RetencaoAPITokensModel
+from schemas.api_v1.tb_retencaoapi_tokens_schema import RetencaoAPITokensCreateSC, RetencaoAPITokensUpdateSC
 
 
 class CRUDItem(CRUDBase[RetencaoAPITokensModel, RetencaoAPITokensCreateSC, RetencaoAPITokensUpdateSC]):

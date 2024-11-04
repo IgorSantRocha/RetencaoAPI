@@ -1,10 +1,10 @@
 from datetime import datetime
 from sqlalchemy.ext.asyncio import AsyncSession
-from schemas.tb_projeto_fedex_historico_schema import TbProjetoFedexHistoricoCreateSC, TbProjetoFedexHistoricoSC
-from schemas.tb_projeto_fedex_schema import TbProjetoFedexBaseSC, TbProjetoFedexCreateSC
-from crud.crud_lista_projeto import lista_projetos
-from crud.crud_tb_projeto_fd import tb_projeto_fd
-from crud.crud_tb_projeto_fd_hist import tb_projeto_fd_hist
+from schemas.api_v1.tb_projeto_fedex_historico_schema import TbProjetoFedexHistoricoCreateSC, TbProjetoFedexHistoricoSC
+from schemas.api_v1.tb_projeto_fedex_schema import TbProjetoFedexBaseSC, TbProjetoFedexCreateSC
+from crud.api_v1.crud_lista_projeto import lista_projetos
+from crud.api_v1.crud_tb_projeto_fd import tb_projeto_fd
+from crud.api_v1.crud_tb_projeto_fd_hist import tb_projeto_fd_hist
 from core.config import settings
 import uuid
 import logging

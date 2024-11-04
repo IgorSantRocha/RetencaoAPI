@@ -2,10 +2,10 @@ from datetime import datetime
 import xmlrpc.client
 from fastapi import HTTPException, status
 from core.config import settings
-from schemas.auth_schema import AuthResponse, AuthCreate, AuthResetPassword, AuthTokenVerficicacaoCreate, AuthAlterCadUser
-from schemas.auth_schema import AuthTokenVerficicacaoResponse, AuthTokenValidacaoResponse, AuthTokenValidacao, AuthTokenVerficicacaoSolic
+from schemas.api_v1.auth_schema import AuthResponse, AuthCreate, AuthResetPassword, AuthTokenVerficicacaoCreate, AuthAlterCadUser
+from schemas.api_v1.auth_schema import AuthTokenVerficicacaoResponse, AuthTokenValidacaoResponse, AuthTokenValidacao, AuthTokenVerficicacaoSolic
 from utils import valida_pwd, valida_username, generate_token, valida_cpf, valida_email
-from core.envia_token import EnviaToken
+from core.api_v1.envia_token import EnviaToken
 
 
 class AuthOdoo:

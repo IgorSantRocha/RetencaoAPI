@@ -1,10 +1,10 @@
 import logging
 from fastapi import APIRouter, Depends
 from fastapi import File, UploadFile, HTTPException, Form
-from core.core_apikey import busca_meio_captura
-from schemas.apikey_schema import APIKeyPerson
-from schemas.tb_fedex_fotos_schema import TbFedexFotosUploadSC
-from core.core_firebase import uplodad_foto_fb
+from core.api_v1.core_apikey import busca_meio_captura
+from schemas.api_v1.apikey_schema import APIKeyPerson
+from schemas.api_v1.tb_fedex_fotos_schema import TbFedexFotosUploadSC
+from core.api_v1.core_firebase import uplodad_foto_fb
 from sqlalchemy.orm import Session
 from api import deps
 

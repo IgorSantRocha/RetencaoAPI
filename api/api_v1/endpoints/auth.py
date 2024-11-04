@@ -1,10 +1,10 @@
 import logging
 from fastapi import APIRouter, Depends, status
-from schemas.auth_schema import Auth, AuthResponse, AuthCreate, AuthResetPassword, AuthTokenValidacao, AuthAlterCadUser
-from schemas.auth_schema import AuthTokenVerficicacaoCreate, AuthTokenVerficicacaoResponse, AuthTokenValidacaoResponse, AuthTokenVerficicacaoSolic
-from core.core_apikey import busca_meio_captura
-from core.core_auth import AuthOdoo
-from schemas.apikey_schema import APIKeyPerson
+from schemas.api_v1.auth_schema import Auth, AuthResponse, AuthCreate, AuthResetPassword, AuthTokenValidacao, AuthAlterCadUser
+from schemas.api_v1.auth_schema import AuthTokenVerficicacaoCreate, AuthTokenVerficicacaoResponse, AuthTokenValidacaoResponse, AuthTokenVerficicacaoSolic
+from core.api_v1.core_apikey import busca_meio_captura
+from core.api_v1.core_auth import AuthOdoo
+from schemas.api_v1.apikey_schema import APIKeyPerson
 from api import deps
 
 router = APIRouter()

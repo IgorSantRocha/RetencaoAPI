@@ -1,6 +1,6 @@
 from fastapi import HTTPException, status
 from core.request import RequestEvolutionAPI
-from schemas.auth_schema import AuthTokenVerficicacaoCreate, AuthTokenVerficicacaoResponse
+from schemas.api_v1.auth_schema import AuthTokenVerficicacaoCreate, AuthTokenVerficicacaoResponse
 from utils import format_whatsapp_number, format_sms_number
 from core.config import settings
 from core.email_smtp import EnvioEmailSmtp

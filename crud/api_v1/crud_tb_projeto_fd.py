@@ -1,6 +1,6 @@
 from crud.base import CRUDBase
-from models.tb_projeto_fedex_model import TbProjetoFDModel
-from schemas.tb_projeto_fedex_schema import TbProjetoFedexCreateSC, TbProjetoFedexSC, TbProjetoFedexUpdateCallidSC
+from models.api_v1.tb_projeto_fedex_model import TbProjetoFDModel
+from schemas.api_v1.tb_projeto_fedex_schema import TbProjetoFedexCreateSC, TbProjetoFedexSC, TbProjetoFedexUpdateCallidSC
 from sqlalchemy.orm import Session
 from sqlalchemy import desc
 from datetime import datetime, timedelta

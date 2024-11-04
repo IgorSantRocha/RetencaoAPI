@@ -1,9 +1,9 @@
 from fastapi import FastAPI, Depends, HTTPException, Security, status
 from core.config import settings
 from sqlalchemy.orm import Session
-from crud.crud_tb_retencaoapi_tokens import tb_retencaoapi_tokens
+from crud.api_v1.crud_tb_retencaoapi_tokens import tb_retencaoapi_tokens
 from api import deps
-from schemas.apikey_schema import APIKeyPerson
+from schemas.api_v1.apikey_schema import APIKeyPerson
 
 
 async def busca_meio_captura(apikey: APIKeyPerson = Security(settings.api_key_header), db: Session = Depends(deps.get_db)) -> str:

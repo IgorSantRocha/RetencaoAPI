@@ -4,13 +4,13 @@ from fastapi import HTTPException, status
 from core.request import RequestEvolutionAPI
 from utils import format_sms_number
 from core.request import RequestClientUnipixAuth, RequestClientUnipixEnvio
-from schemas.resposta_sms_schema import Sms
-from schemas.resposta_evolution_schema import MessageSchema
-from schemas.tb_projeto_fedex_historico_schema import TbProjetoFedexHistoricoUpdate
-from schemas.tb_projeto_fedex_schema import TbProjetoFedexUpdateCallidSC
-from crud.crud_tb_projeto_fd_hist import tb_projeto_fd_hist
-from crud.crud_tb_operacional import tb_fedex_operacional
-from crud.crud_tb_projeto_fd import tb_projeto_fd_callid
+from schemas.api_v1.resposta_sms_schema import Sms
+from schemas.api_v1.resposta_evolution_schema import MessageSchema
+from schemas.api_v1.tb_projeto_fedex_historico_schema import TbProjetoFedexHistoricoUpdate
+from schemas.api_v1.tb_projeto_fedex_schema import TbProjetoFedexUpdateCallidSC
+from crud.api_v1.crud_tb_projeto_fd_hist import tb_projeto_fd_hist
+from crud.api_v1.crud_tb_operacional import tb_fedex_operacional
+from crud.api_v1.crud_tb_projeto_fd import tb_projeto_fd_callid
 
 
 class RespostaSMS():

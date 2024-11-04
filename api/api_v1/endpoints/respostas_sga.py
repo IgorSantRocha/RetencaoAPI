@@ -1,12 +1,12 @@
 import logging
-from schemas.apikey_schema import APIKeyPerson
-from schemas.resposta_evolution_schema import MessageSchema
+from schemas.api_v1.apikey_schema import APIKeyPerson
+from schemas.api_v1.resposta_evolution_schema import MessageSchema
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
-from schemas.resposta_sms_schema import Sms
-from schemas.resposta_evolution_schema import ResponseEvolutionSC
-from core.core_apikey import busca_meio_captura
-from core.core_respostas import RespostaSMS, RespostaWPP
+from schemas.api_v1.resposta_sms_schema import Sms
+from schemas.api_v1.resposta_evolution_schema import ResponseEvolutionSC
+from core.api_v1.core_apikey import busca_meio_captura
+from core.api_v1.core_respostas import RespostaSMS, RespostaWPP
 
 from api import deps
 

@@ -1,14 +1,14 @@
 from typing import Any, List
 import logging
-from schemas.apikey_schema import APIKeyPerson
+from schemas.api_v1.apikey_schema import APIKeyPerson
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
-from core.core_apikey import busca_meio_captura
-from schemas.lista_projeto_schema import ListaProjetoBaseSC
-from schemas.tb_projeto_fedex_schema import TbProjetoFedexSC, TbProjetoFedexConsultaOSSC
-from schemas.ocorrencia_schema import ListaOcorrenciaBaseSC
-from schemas.tipo_atendimento_schema import TipoAtendimentoBaseSC
-from core.core_consultas import Consultas
+from core.api_v1.core_apikey import busca_meio_captura
+from schemas.api_v1.lista_projeto_schema import ListaProjetoBaseSC
+from schemas.api_v1.tb_projeto_fedex_schema import TbProjetoFedexSC, TbProjetoFedexConsultaOSSC
+from schemas.api_v1.ocorrencia_schema import ListaOcorrenciaBaseSC
+from schemas.api_v1.tipo_atendimento_schema import TipoAtendimentoBaseSC
+from core.api_v1.core_consultas import Consultas
 from api import deps
 
 router = APIRouter()

@@ -2,8 +2,8 @@ from datetime import datetime
 from fastapi import File, Depends, UploadFile, HTTPException
 from core.config import settings
 from sqlalchemy.orm import Session
-from crud.crud_tb_fedex_fotos import tb_fedex_fotos
-from schemas.tb_fedex_fotos_schema import TbFedexFotosCreateSC, TbFedexFotosUploadSC
+from crud.api_v1.crud_tb_fedex_fotos import tb_fedex_fotos
+from schemas.api_v1.tb_fedex_fotos_schema import TbFedexFotosCreateSC, TbFedexFotosUploadSC
 
 import os
 from core.config import firebase_bucket

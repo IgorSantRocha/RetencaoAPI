@@ -1,11 +1,11 @@
 import logging
-from schemas.apikey_schema import APIKeyPerson
+from schemas.api_v1.apikey_schema import APIKeyPerson
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
-from schemas.tb_projeto_fedex_historico_schema import TbProjetoFedexHistoricoSC
-from schemas.tb_projeto_fedex_schema import TbProjetoFedexCreateSC
-from core.core_apikey import busca_meio_captura
-from core.core_abertura import Abertura
+from schemas.api_v1.tb_projeto_fedex_historico_schema import TbProjetoFedexHistoricoSC
+from schemas.api_v1.tb_projeto_fedex_schema import TbProjetoFedexCreateSC
+from core.api_v1.core_apikey import busca_meio_captura
+from core.api_v1.core_abertura import Abertura
 from api import deps
 
 router = APIRouter()

@@ -1,12 +1,12 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from schemas.lista_projeto_schema import ListaProjetoBaseSC
-from schemas.tipo_atendimento_schema import TipoAtendimentoBaseSC
-from schemas.ocorrencia_schema import ListaOcorrenciaBaseSC
-from schemas.tb_projeto_fedex_schema import TbProjetoFedexSC, TbProjetoFedexConsultaOSSC
-from crud.crud_lista_projeto import lista_projetos
-from crud.crud_lista_ocorrencia import lista_ocorrencia
-from crud.crud_lista_tipo_atendimento import lista_tipo_atendimento
-from crud.crud_tb_projeto_fd import tb_projeto_fd
+from schemas.api_v1.lista_projeto_schema import ListaProjetoBaseSC
+from schemas.api_v1.tipo_atendimento_schema import TipoAtendimentoBaseSC
+from schemas.api_v1.ocorrencia_schema import ListaOcorrenciaBaseSC
+from schemas.api_v1.tb_projeto_fedex_schema import TbProjetoFedexSC, TbProjetoFedexConsultaOSSC
+from crud.api_v1.crud_lista_projeto import lista_projetos
+from crud.api_v1.crud_lista_ocorrencia import lista_ocorrencia
+from crud.api_v1.crud_lista_tipo_atendimento import lista_tipo_atendimento
+from crud.api_v1.crud_tb_projeto_fd import tb_projeto_fd
 from fastapi import HTTPException
 import re
 
