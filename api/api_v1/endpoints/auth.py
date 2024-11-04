@@ -6,6 +6,7 @@ from core.api_v1.core_apikey import busca_meio_captura
 from core.api_v1.core_auth import AuthOdoo
 from schemas.api_v1.apikey_schema import APIKeyPerson
 from api import deps
+from sqlalchemy.orm import Session
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -18,6 +19,20 @@ logger = logging.getLogger(__name__)
 async def post_login(auth_data: Auth,
                      api_key: APIKeyPerson = Depends(
                          busca_meio_captura)):
+    logger.info("Autenticando usuário")
+    auth = AuthOdoo()
+    response: AuthResponse = await auth.autentica_usuario(
+        usr=auth_data.username, pwd=auth_data.password)
+    return response
+
+
+@router.post('/login2factors/', response_model=dict(), status_code=status.HTTP_200_OK,
+             summary='Realiza o login 2 fatores',
+             description='Loga o usuário e manda o token de verificação no e-mail',
+             response_description='Token enviado com sucesso')
+async def post_login2factors(auth_data: Auth,
+                             db_212: Session = Depends(deps.get_db),
+                             db_211: Session = Depends(deps.get_db_211)):
     logger.info("Autenticando usuário")
     auth = AuthOdoo()
     response: AuthResponse = await auth.autentica_usuario(
