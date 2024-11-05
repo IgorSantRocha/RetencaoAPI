@@ -28,14 +28,14 @@ class APITokensBaseSC(BaseModel):
     id: int
     criadoem: datetime
     usr: str
-    token: int
+    token: str
     expiraem: datetime
     usado: bool
 
 
 class APITokensCreateSC(BaseModel):
     usr: str
-    token: int
+    token: str
     expiraem: datetime
 
 

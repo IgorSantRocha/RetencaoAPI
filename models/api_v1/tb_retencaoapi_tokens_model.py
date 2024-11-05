@@ -18,6 +18,6 @@ class APITokensModel(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     criadoem = Column(DateTime, default=datetime.now())
     usr = Column("usr", String(50))
-    token = Column("token", Integer)
+    token = Column("token", String(6))
     expiraem = Column("expiraem", DateTime)
     usado = Column("usado", Boolean)
