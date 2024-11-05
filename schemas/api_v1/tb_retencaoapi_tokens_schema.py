@@ -1,3 +1,4 @@
+from datetime import datetime
 from pydantic import BaseModel
 
 
@@ -21,3 +22,23 @@ class RetencaoAPITokensInDbBaseSC(RetencaoAPITokensBaseSC):
 
 class RetencaoAPITokensSC(RetencaoAPITokensInDbBaseSC):
     pass
+
+
+class APITokensBaseSC(BaseModel):
+    id: int
+    criadoem: datetime
+    usr: str
+    token: int
+    expiraem: datetime
+    usado: bool
+
+
+class APITokensCreateSC(BaseModel):
+    usr: str
+    token: int
+    expiraem: datetime
+
+
+class APITokensUpdateSC(BaseModel):
+    id: int
+    usado: bool
