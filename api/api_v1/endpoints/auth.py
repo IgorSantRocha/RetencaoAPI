@@ -2,6 +2,7 @@ import logging
 from fastapi import APIRouter, Depends, status
 from schemas.api_v1.auth_schema import Auth, AuthResponse, AuthCreate, AuthResetPassword, AuthTokenValidacao, AuthAlterCadUser
 from schemas.api_v1.auth_schema import AuthTokenVerficicacaoCreate, AuthTokenVerficicacaoResponse, AuthTokenValidacaoResponse, AuthTokenVerficicacaoSolic
+from schemas.api_v1.usr_schema import UserGeralSC
 from core.api_v1.core_apikey import busca_meio_captura
 from core.api_v1.core_auth import AuthOdoo, Auth2Factores
 from schemas.api_v1.apikey_schema import APIKeyPerson
@@ -135,16 +136,18 @@ async def post_login2factores(auth_data: Auth,
     return {'msg': 'Token de validação enviado no e-mail'}
 
 
-@router.post('/validar_token2factores/', response_model=AuthTokenValidacaoResponse, status_code=status.HTTP_200_OK,
+@router.post('/validar_token2factores/', response_model=UserGeralSC, status_code=status.HTTP_200_OK,
              summary='Validar Token',
              description='Valida o Token e retorna as informações do usuário.',
              response_description='Usuário logado com sucesso!')
 async def post_validar_token_2factores(auth_data: AuthTokenValidacao,
                                        api_key: APIKeyPerson = Depends(
                                            busca_meio_captura),
-                                       db_211: Session = Depends(deps.get_db_211)):
+                                       db_211: Session = Depends(
+                                           deps.get_db_211),
+                                       db_212: Session = Depends(deps.get_db)):
 
     logger.info("Validando token")
     auth = Auth2Factores()
-    response: AuthTokenValidacaoResponse = await auth.valida_token(db_211=db_211, usr=auth_data.username, token=auth_data.token)
-    return 'response'
+    response: UserGeralSC = await auth.valida_token(db_211=db_211, db_212=db_212, usr=auth_data.username, token=auth_data.token)
+    return response

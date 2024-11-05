@@ -4,6 +4,7 @@ from fastapi import HTTPException, status
 from core.config import settings
 from schemas.api_v1.auth_schema import AuthResponse, AuthCreate, AuthResetPassword, AuthTokenVerficicacaoCreate, AuthAlterCadUser
 from schemas.api_v1.auth_schema import AuthTokenVerficicacaoResponse, AuthTokenValidacaoResponse, AuthTokenValidacao, AuthTokenVerficicacaoSolic
+from schemas.api_v1.usr_schema import UserGeralSC
 from schemas.api_v1.tb_retencaoapi_tokens_schema import APITokensCreateSC, APITokensUpdateSC
 from utils import valida_pwd, valida_username, generate_token, valida_cpf, valida_email
 from core.api_v1.envia_token import EnviaToken
@@ -50,7 +51,7 @@ class Auth2Factores:
 
         return token_gerado.id
 
-    async def valida_token(self, usr: str, token: str, db_211: AsyncSession):
+    async def valida_token(self, usr: str, token: str, db_211: AsyncSession, db_212: AsyncSession):
 
         dados_token = tb_api_tokens.get_last_by_filters(
             db_211,
@@ -71,8 +72,23 @@ class Auth2Factores:
             db=db_211,
             db_obj=dados_token,
             obj_in=dados_token_usado)
+        
+        usuario_211 = user_211.get_last_by_filters(
+            db_211,
+            filters={'usr': {'operator': '==', 'value': usr}})
+        usuario_212 = user_212.get_last_by_filters(
+            db_212,
+            filters={'usr': {'operator': '==', 'value': usr}})
+        
+        retorno_usr = UserGeralSC(
+            id = usuario_211.id,
+            usr=usuario_211.usr,
+            nome = usuario_212.nome,
+            nivel=usuario_212.nivel,
+            niveldescricao=usuario_211.niveldescricao
+        )
 
-        return 'OK'
+        return retorno_usr
 
 
 class AuthOdoo:
