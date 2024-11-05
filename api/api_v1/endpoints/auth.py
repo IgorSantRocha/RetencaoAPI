@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, status
 from schemas.api_v1.auth_schema import Auth, AuthResponse, AuthCreate, AuthResetPassword, AuthTokenValidacao, AuthAlterCadUser
 from schemas.api_v1.auth_schema import AuthTokenVerficicacaoCreate, AuthTokenVerficicacaoResponse, AuthTokenValidacaoResponse, AuthTokenVerficicacaoSolic
 from core.api_v1.core_apikey import busca_meio_captura
-from core.api_v1.core_auth import AuthOdoo,Auth2Factores
+from core.api_v1.core_auth import AuthOdoo, Auth2Factores
 from schemas.api_v1.apikey_schema import APIKeyPerson
 from api import deps
 from sqlalchemy.orm import Session
@@ -24,21 +24,6 @@ async def post_login(auth_data: Auth,
     response: AuthResponse = await auth.autentica_usuario(
         usr=auth_data.username, pwd=auth_data.password)
     return response
-
-
-@router.post('/login2factores/', response_model=dict(), status_code=status.HTTP_200_OK,
-             summary='Realiza o login 2 fatores',
-             description='Loga o usuário e manda o token de verificação no e-mail',
-             response_description='Token enviado com sucesso')
-async def post_login2factores(auth_data: Auth,
-                             db_212: Session = Depends(deps.get_db),
-                             db_211: Session = Depends(deps.get_db_211)):
-    logger.info("Autenticando usuário")
-    auth = Auth2Factores()
-    response = await auth.verifica_credenciais(
-        usr=auth_data.username, pwd=auth_data.password,db_211=db_211,db_212=db_212)
-    
-    return {'msg':'Token de validação enviado no e-mail'}
 
 
 @router.post('/create/', response_model=AuthResponse, status_code=status.HTTP_200_OK,
@@ -131,3 +116,35 @@ async def post_delete(auth_data: Auth,
     response: AuthResponse = await auth.deleta_usuario(
         usr=auth_data.username, pwd=auth_data.password)
     return response
+
+
+@router.post('/login2factores/', response_model=dict(), status_code=status.HTTP_200_OK,
+             summary='Realiza o login 2 fatores',
+             description='Loga o usuário e manda o token de verificação no e-mail',
+             response_description='Token enviado com sucesso')
+async def post_login2factores(auth_data: Auth,
+                              api_key: APIKeyPerson = Depends(
+                                  busca_meio_captura),
+                              db_212: Session = Depends(deps.get_db),
+                              db_211: Session = Depends(deps.get_db_211)):
+    logger.info("Autenticando usuário")
+    auth = Auth2Factores()
+    response = await auth.verifica_credenciais(
+        usr=auth_data.username, pwd=auth_data.password, db_211=db_211, db_212=db_212)
+
+    return {'msg': 'Token de validação enviado no e-mail'}
+
+
+@router.post('/validar_token2factores/', response_model=AuthTokenValidacaoResponse, status_code=status.HTTP_200_OK,
+             summary='Validar Token',
+             description='Valida o Token e retorna as informações do usuário.',
+             response_description='Usuário logado com sucesso!')
+async def post_validar_token_2factores(auth_data: AuthTokenValidacao,
+                                       api_key: APIKeyPerson = Depends(
+                                           busca_meio_captura),
+                                       db_211: Session = Depends(deps.get_db_211)):
+
+    logger.info("Validando token")
+    auth = Auth2Factores()
+    response: AuthTokenValidacaoResponse = await auth.valida_token(db_211=db_211, usr=auth_data.username, token=auth_data.token)
+    return 'response'
