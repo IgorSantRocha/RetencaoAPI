@@ -18,5 +18,5 @@ class UsrRetModel(Base):
     usr = Column("usr", String(250))
     nome = Column("nome", String(250))
     pwd = Column("pwd", String(50))
-    id = Column("id", Integer)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     nivel = Column("nivel", String(15))

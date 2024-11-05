@@ -7,11 +7,19 @@ from schemas.api_v1.auth_schema import AuthTokenVerficicacaoResponse, AuthTokenV
 from utils import valida_pwd, valida_username, generate_token, valida_cpf, valida_email
 from core.api_v1.envia_token import EnviaToken
 from sqlalchemy.ext.asyncio import AsyncSession
+from crud.api_v1.crud_users import user_211, user_212
+
 
 class Auth2Factores:
     async def verifica_credenciais(self, usr: str, pwd: str, db_211: AsyncSession, db_212: AsyncSession):
-        pass
-    
+        usuario_211 = user_211.get_last_by_filters(db_211,
+                                                   filters={'usr': {'operator': '==', 'value': usr},
+                                                            'pwd': {'operator': '==', 'value': pwd}})
+        usuario_212 = user_212.get_last_by_filters(db_212,
+                                                   filters={'usr': {'operator': '==', 'value': usr},
+                                                            'pwd': {'operator': '==', 'value': pwd}})
+        return 'OK'
+
 
 class AuthOdoo:
     async def autentica_usuario(self, usr: str, pwd: str) -> AuthResponse:
