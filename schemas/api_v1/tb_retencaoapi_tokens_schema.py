@@ -35,8 +35,7 @@ class APITokensBaseSC(BaseModel):
 
 class APITokensCreateSC(BaseModel):
     usr: str
-    token: str
-    expiraem: datetime
+    token: int
 
 
 class APITokensUpdateSC(BaseModel):

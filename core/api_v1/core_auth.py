@@ -4,10 +4,12 @@ from fastapi import HTTPException, status
 from core.config import settings
 from schemas.api_v1.auth_schema import AuthResponse, AuthCreate, AuthResetPassword, AuthTokenVerficicacaoCreate, AuthAlterCadUser
 from schemas.api_v1.auth_schema import AuthTokenVerficicacaoResponse, AuthTokenValidacaoResponse, AuthTokenValidacao, AuthTokenVerficicacaoSolic
+from schemas.api_v1.tb_retencaoapi_tokens_schema import APITokensCreateSC
 from utils import valida_pwd, valida_username, generate_token, valida_cpf, valida_email
 from core.api_v1.envia_token import EnviaToken
 from sqlalchemy.ext.asyncio import AsyncSession
 from crud.api_v1.crud_users import user_211, user_212
+from crud.api_v1.crud_tb_retencaoapi_tokens import tb_api_tokens
 
 
 class Auth2Factores:
@@ -18,7 +20,31 @@ class Auth2Factores:
         usuario_212 = user_212.get_last_by_filters(db_212,
                                                    filters={'usr': {'operator': '==', 'value': usr},
                                                             'pwd': {'operator': '==', 'value': pwd}})
-        return 'OK'
+        if not usuario_211 and not usuario_212:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail='Usuário ou senha inválidos')
+
+        if not usuario_211.email:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail='Usuário não tem e-mail cadastrado. Envie uma solicitação para que o e-mail seja adicionado')
+
+        token = APITokensCreateSC(
+            usr=usuario_211.usr,
+            token=generate_token()
+        )
+        token_gerado = tb_api_tokens.create(db=db_211, obj_in=token)
+        envio_token = EnviaToken(
+            email=usuario_211.email,
+            phone='',
+            username=usuario_211.usr,
+            enviar_por='E-mail'
+        )
+
+        envio = await envio_token.envia_token(token=token.token,
+                                              assunto='C-Trends - Token de verificação',
+                                              texto='Segue token de verificação para login no sistema')
+
+        return token_gerado.id
 
 
 class AuthOdoo:

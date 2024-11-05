@@ -8,11 +8,11 @@ from core.request import RequestClientUnipixAuth, RequestClientUnipixEnvioToken
 
 
 class EnviaToken(AuthTokenVerficicacaoCreate):
-    async def envia_token(self, token: int):
+    async def envia_token(self, token: int, assunto: str = None, texto: str = None):
         if self.enviar_por == 'WhatsApp':
             resposta = await self._wpp(token)
         elif self.enviar_por == 'E-mail':
-            resposta = await self._email(token)
+            resposta = await self._email(token, assunto, texto)
         elif self.enviar_por == 'SMS':
             resposta = await self._sms(token)
         else:
@@ -36,16 +36,21 @@ class EnviaToken(AuthTokenVerficicacaoCreate):
 
         return response
 
-    async def _email(self, token: int):
+    async def _email(self, token: int, assunto: str = None, texto: str = None):
 
         para = self.email
-        assunto = 'Token de verificação - Central Retenção'
+        if not assunto:
+            assunto = 'Token de verificação - Central Retenção'
+
+        if not texto:
+            texto = 'Anote o token de alteração de senha'
+
         corpo = f"""
         <html>
         <head></head>
         <body>
             <h1>Olá!</h1>
-            <p>Anote o token de verificação: <b style="color: blue;">{token}</b>!</p>
+            <p>{texto}: <b style="color: blue;">{token}</b>!</p>
         </body>
         </html>
         """

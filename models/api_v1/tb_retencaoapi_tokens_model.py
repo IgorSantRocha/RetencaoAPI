@@ -1,5 +1,5 @@
 from sqlalchemy import Boolean, Column, Integer, String, DateTime, Text
-from datetime import datetime
+from datetime import datetime, timedelta
 from db.base_class import Base
 
 
@@ -19,5 +19,6 @@ class APITokensModel(Base):
     criadoem = Column(DateTime, default=datetime.now())
     usr = Column("usr", String(50))
     token = Column("token", String(6))
-    expiraem = Column("expiraem", DateTime)
-    usado = Column("usado", Boolean)
+    expiraem = Column(
+        DateTime, default=lambda: datetime.now() + timedelta(minutes=10))
+    usado = Column("usado", Boolean, default=False)
