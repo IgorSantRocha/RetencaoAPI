@@ -14,19 +14,22 @@ from crud.api_v1.crud_tb_retencaoapi_tokens import tb_api_tokens
 
 class Auth2Factores:
     async def verifica_credenciais(self, usr: str, pwd: str, db_211: AsyncSession, db_212: AsyncSession):
-        usuario_211 = user_211.get_last_by_filters(db_211,
-                                                   filters={'usr': {'operator': '==', 'value': usr},
-                                                            'pwd': {'operator': '==', 'value': pwd}})
-        usuario_212 = user_212.get_last_by_filters(db_212,
-                                                   filters={'usr': {'operator': '==', 'value': usr},
-                                                            'pwd': {'operator': '==', 'value': pwd}})
+        usuario_211 = user_211.get_last_by_filters(
+            db_211,
+            filters={'usr': {'operator': '==', 'value': usr},
+                     'pwd': {'operator': '==', 'value': pwd}})
+        usuario_212 = user_212.get_last_by_filters(
+            db_212,
+            filters={'usr': {'operator': '==', 'value': usr},
+                     'pwd': {'operator': '==', 'value': pwd}})
         if not usuario_211 and not usuario_212:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND, detail='Usuário ou senha inválidos')
 
         if not usuario_211.email:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail='Usuário não tem e-mail cadastrado. Envie uma solicitação para que o e-mail seja adicionado')
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail='Usuário não tem e-mail cadastrado. Envie uma solicitação para que o e-mail seja adicionado')
 
         token = APITokensCreateSC(
             usr=usuario_211.usr,
@@ -40,9 +43,10 @@ class Auth2Factores:
             enviar_por='E-mail'
         )
 
-        envio = await envio_token.envia_token(token=token.token,
-                                              assunto='C-Trends - Token de verificação',
-                                              texto='Segue token de verificação para login no sistema')
+        envio = await envio_token.envia_token(
+            token=token.token,
+            assunto='C-Trends - Token de verificação',
+            texto='Segue token de verificação para login no sistema')
 
         return token_gerado.id
 
