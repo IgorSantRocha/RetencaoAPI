@@ -1,17 +1,17 @@
 from pydantic import BaseModel
 
 
-class UsrAgSC(BaseModel):
+class UsrBase(BaseModel):
+    id: int
     usr: str
     nome: str
-    id: int
+    pwd: str
+
+
+class UsrAgSC(UsrBase):
     niveldescricao: str
     email: str
 
 
-class UsrRetSC(BaseModel):
-    usr: str
-    nome: str
-    pwd: str
-    id: int
+class UsrRetSC(UsrBase):
     nivel: str
