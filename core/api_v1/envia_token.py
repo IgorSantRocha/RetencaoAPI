@@ -39,13 +39,13 @@ class EnviaToken(AuthTokenVerficicacaoCreate):
     async def _email(self, token: int):
 
         para = self.email
-        assunto = 'Token de alteração - Central Retenção'
+        assunto = 'Token de verificação - Central Retenção'
         corpo = f"""
         <html>
         <head></head>
         <body>
             <h1>Olá!</h1>
-            <p>Anote o token de alteração de senha: <b style="color: blue;">{token}</b>!</p>
+            <p>Anote o token de verificação: <b style="color: blue;">{token}</b>!</p>
         </body>
         </html>
         """
