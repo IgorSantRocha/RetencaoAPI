@@ -11,6 +11,7 @@ class UsrAgModel(Base):
     niveldescricao = Column("NivelDescricao", String(50))
     pwd = Column("pwd", String(50))
     email = Column("email", String(250))
+    nivel = Column("Nivel", Integer)
 
 
 class UsrRetModel(Base):

@@ -14,23 +14,22 @@ from crud.api_v1.crud_tb_retencaoapi_tokens import tb_api_tokens
 
 
 class Auth2Factores:
-    async def verifica_credenciais(self, usr: str, pwd: str, db_211: AsyncSession, db_212: AsyncSession):
+    async def verifica_credenciais(self, usr: str, pwd: str, db_211: AsyncSession):
         usuario_211 = user_211.get_last_by_filters(
             db_211,
             filters={'usr': {'operator': '==', 'value': usr},
                      'pwd': {'operator': '==', 'value': pwd}})
-        usuario_212 = user_212.get_last_by_filters(
-            db_212,
-            filters={'usr': {'operator': '==', 'value': usr},
-                     'pwd': {'operator': '==', 'value': pwd}})
-        if not usuario_211 and not usuario_212:
+        # usuario_212 = user_212.get_last_by_filters(db_212,filters={'usr': {'operator': '==', 'value': usr},'pwd': {'operator': '==', 'value': pwd}})
+
+        if not usuario_211:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND, detail='Usuário ou senha inválidos')
 
-        if not usuario_211.email:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail='Usuário não tem e-mail cadastrado. Envie uma solicitação para que o e-mail seja adicionado')
+        if usuario_211:
+            if not usuario_211.email:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail='Usuário não tem e-mail cadastrado. Envie uma solicitação para que o e-mail seja adicionado')
 
         token = APITokensCreateSC(
             usr=usuario_211.usr,
@@ -51,11 +50,12 @@ class Auth2Factores:
 
         return token_gerado.id
 
-    async def valida_token(self, usr: str, token: str, db_211: AsyncSession, db_212: AsyncSession):
+    async def valida_token(self, usr: str, token: str, db_211: AsyncSession):
 
         dados_token = tb_api_tokens.get_last_by_filters(
             db_211,
             filters={'usr': {'operator': '==', 'value': usr},
+                     'token':{'operator': '==', 'value': token},
                      'expiraem': {'operator': '>=', 'value': datetime.now()},
                      'usado': {'operator': '==', 'value': False}})
 
@@ -72,19 +72,17 @@ class Auth2Factores:
             db=db_211,
             db_obj=dados_token,
             obj_in=dados_token_usado)
-        
+
         usuario_211 = user_211.get_last_by_filters(
             db_211,
             filters={'usr': {'operator': '==', 'value': usr}})
-        usuario_212 = user_212.get_last_by_filters(
-            db_212,
-            filters={'usr': {'operator': '==', 'value': usr}})
-        
+        # usuario_212 = user_212.get_last_by_filters(db_212,filters={'usr': {'operator': '==', 'value': usr}})
+
         retorno_usr = UserGeralSC(
-            id = usuario_211.id,
+            id=usuario_211.id,
             usr=usuario_211.usr,
-            nome = usuario_212.nome,
-            nivel=usuario_212.nivel,
+            nome=usuario_211.nome,
+            nivel=usuario_211.nivel,
             niveldescricao=usuario_211.niveldescricao
         )
 

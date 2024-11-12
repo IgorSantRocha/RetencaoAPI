@@ -74,6 +74,9 @@ class Consultas:
         if detalhes.status == '...':
             detalhes.status = 'Aguardando tratativa'
 
+        if detalhes.projeto == 'FIRST':
+            detalhes.projeto = 'FISERV'
+
         return detalhes
 
     ##### VALIDAÇÕES #####

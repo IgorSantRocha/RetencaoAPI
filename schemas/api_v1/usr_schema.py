@@ -9,6 +9,7 @@ class UsrBase(BaseModel):
 
 class UsrAgSC(UsrBase):
     niveldescricao: str
+    nivel: str
     email: str
     pwd: str
 
@@ -20,4 +21,4 @@ class UsrRetSC(UsrBase):
 
 class UserGeralSC(UsrBase):
     niveldescricao: str
-    nivel: str
+    nivel: int

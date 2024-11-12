@@ -126,12 +126,11 @@ async def post_delete(auth_data: Auth,
 async def post_login2factores(auth_data: Auth,
                               api_key: APIKeyPerson = Depends(
                                   busca_meio_captura),
-                              db_212: Session = Depends(deps.get_db),
                               db_211: Session = Depends(deps.get_db_211)):
     logger.info("Autenticando usuário")
     auth = Auth2Factores()
     response = await auth.verifica_credenciais(
-        usr=auth_data.username, pwd=auth_data.password, db_211=db_211, db_212=db_212)
+        usr=auth_data.username, pwd=auth_data.password, db_211=db_211)
 
     return {'msg': 'Token de validação enviado no e-mail'}
 
@@ -144,10 +143,9 @@ async def post_validar_token_2factores(auth_data: AuthTokenValidacao,
                                        api_key: APIKeyPerson = Depends(
                                            busca_meio_captura),
                                        db_211: Session = Depends(
-                                           deps.get_db_211),
-                                       db_212: Session = Depends(deps.get_db)):
+                                           deps.get_db_211)):
 
     logger.info("Validando token")
     auth = Auth2Factores()
-    response: UserGeralSC = await auth.valida_token(db_211=db_211, db_212=db_212, usr=auth_data.username, token=auth_data.token)
+    response: UserGeralSC = await auth.valida_token(db_211=db_211, usr=auth_data.username, token=auth_data.token)
     return response
