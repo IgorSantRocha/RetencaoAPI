@@ -2,7 +2,8 @@ from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 import logging
 import uvicorn
-from api.api_v1.api import api_router
+from api.api_v1.api import api_router as api_router_v1
+from api.api_v2.api import api_router as api_router_v2
 from core.config import settings
 from opentelemetry.sdk.resources import Resource
 from opentelemetry.sdk.trace import TracerProvider
@@ -43,7 +44,8 @@ def api_factory():
             allow_headers=["*"],
         )
 
-    app.include_router(api_router, prefix=settings.API_V1_STR)
+    app.include_router(api_router_v1, prefix=settings.API_V1_STR)
+    app.include_router(api_router_v2, prefix=settings.API_V2_STR)
 
     return app
 

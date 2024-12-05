@@ -7,7 +7,7 @@ api_router.include_router(
     auth.router, prefix="/auth", tags=["Autenticação"])
 
 api_router.include_router(
-    consultas.router, prefix="/consultas", tags=["Consultas"])
+    consultas.router, prefix="/consultas", tags=["Consultas V1"])
 
 api_router.include_router(
     firebase.router, prefix="/firebase", tags=["Firebase Upload"])

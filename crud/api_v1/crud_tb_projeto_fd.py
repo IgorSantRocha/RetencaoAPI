@@ -7,11 +7,12 @@ from datetime import datetime, timedelta
 
 
 class CRUDItem(CRUDBase[TbProjetoFDModel, TbProjetoFedexCreateSC, TbProjetoFedexCreateSC]):
-    def get_recente(self, db: Session, uid: int) -> list[TbProjetoFedexSC]:
+    def get_recente(self, db: Session, uid: int, cliente: str) -> list[TbProjetoFedexSC]:
 
         hora_dif = datetime.now() - timedelta(days=5)
         consulta = db.query(self.model).filter(
             self.model.uid == uid,
+            self.model.cliente == cliente,
             self.model.dt_abertura >= hora_dif
         ).order_by(desc(self.model.dt_fechamento)).all()
 
@@ -19,11 +20,12 @@ class CRUDItem(CRUDBase[TbProjetoFDModel, TbProjetoFedexCreateSC, TbProjetoFedex
 
 
 class CRUDItemCallid(CRUDBase[TbProjetoFDModel, TbProjetoFedexUpdateCallidSC, TbProjetoFedexUpdateCallidSC]):
-    def get_recente(self, db: Session, uid: int) -> list[TbProjetoFedexSC]:
+    def get_recente(self, db: Session, uid: int, cliente: str) -> list[TbProjetoFedexSC]:
 
         hora_dif = datetime.now() - timedelta(days=5)
         consulta = db.query(self.model).filter(
             self.model.uid == uid,
+            self.model.cliente == cliente,
             self.model.dt_abertura >= hora_dif
         ).all()
 
