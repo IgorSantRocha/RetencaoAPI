@@ -98,6 +98,10 @@ class Abertura():
             info_os.projeto = 'CIELO'
         elif info_os.projeto == 'CIELO' and not os.startswith('CLC'):
             info_os.projeto = 'CTBPO'
+        elif info_os.projeto != 'CLARO' and os.startswith('CLR'):
+            info_os.projeto = 'CLARO'
+        elif info_os.projeto == 'CLARO' and not os.startswith('CLR'):
+            info_os.projeto = 'CTBPO'
         elif info_os.projeto == 'FISERV':
             info_os.projeto = 'FIRST'
 

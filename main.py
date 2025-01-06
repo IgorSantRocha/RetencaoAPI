@@ -5,12 +5,6 @@ import uvicorn
 from api.api_v1.api import api_router as api_router_v1
 from api.api_v2.api import api_router as api_router_v2
 from core.config import settings
-from opentelemetry.sdk.resources import Resource
-from opentelemetry.sdk.trace import TracerProvider
-from opentelemetry.sdk.trace.export import BatchSpanProcessor
-from opentelemetry import trace
-from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
-from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 from opentelemetry.instrumentation.logging import LoggingInstrumentor
 from opentelemetry.instrumentation.httpx import HTTPXClientInstrumentor
 from fastapi.openapi.docs import get_swagger_ui_html, get_redoc_html
