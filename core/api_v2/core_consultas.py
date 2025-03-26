@@ -1,14 +1,8 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from schemas.api_v1.lista_projeto_schema import ListaProjetoBaseSC
-from schemas.api_v1.tipo_atendimento_schema import TipoAtendimentoBaseSC
-from schemas.api_v1.ocorrencia_schema import ListaOcorrenciaBaseSC
-from schemas.api_v1.tb_projeto_fedex_schema import TbProjetoFedexSC, TbProjetoFedexConsultaOSSC
-from crud.api_v1.crud_lista_projeto import lista_projetos
-from crud.api_v1.crud_lista_ocorrencia import lista_ocorrencia
-from crud.api_v1.crud_lista_tipo_atendimento import lista_tipo_atendimento
+from schemas.api_v1.tb_fedex_fotos_schema import TbFedexFotosBaseConsultaSC
+from schemas.api_v1.tb_projeto_fedex_schema import TbProjetoFedexSC
+from crud.api_v1.crud_tb_fedex_fotos import tb_fedex_fotos
 from crud.api_v1.crud_tb_projeto_fd import tb_projeto_fd
-from fastapi import HTTPException
-import re
 
 
 class Consultas:
@@ -16,3 +10,9 @@ class Consultas:
         consulta = tb_projeto_fd.get_recente(db=db, uid=uid, cliente=cliente)
 
         return consulta
+
+    async def busca_fotos_e_geo_os(self, os: str, db: AsyncSession) -> list[TbFedexFotosBaseConsultaSC]:
+        fotos_e_geo: TbFedexFotosBaseConsultaSC = tb_fedex_fotos.get_multi_filter(
+            db=db, filterby='os', filter=os)
+
+        return fotos_e_geo

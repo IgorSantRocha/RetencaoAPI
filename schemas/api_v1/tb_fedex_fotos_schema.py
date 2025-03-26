@@ -8,8 +8,17 @@ class TbFedexFotosBaseSC(BaseModel):
     latitude: str
     longitude: str
     imageurl: str
-    uid: int
+    uid: Optional[int] = None
     data_abertura: str
+
+
+class TbFedexFotosBaseConsultaSC(BaseModel):
+    os: str
+    latitude: str
+    longitude: str
+    imageurl: str
+    uid: Optional[int] = None
+    data_abertura: datetime
 
 
 class TbFedexFotosCreateSC(TbFedexFotosBaseSC):

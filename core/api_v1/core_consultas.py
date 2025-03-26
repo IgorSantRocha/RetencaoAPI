@@ -1,5 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from schemas.api_v1.lista_projeto_schema import ListaProjetoBaseSC
+from schemas.api_v1.tb_fedex_fotos_schema import TbFedexFotosBaseSC
 from schemas.api_v1.tipo_atendimento_schema import TipoAtendimentoBaseSC
 from schemas.api_v1.ocorrencia_schema import ListaOcorrenciaBaseSC
 from schemas.api_v1.tb_projeto_fedex_schema import TbProjetoFedexSC, TbProjetoFedexConsultaOSSC
@@ -7,6 +8,7 @@ from crud.api_v1.crud_lista_projeto import lista_projetos
 from crud.api_v1.crud_lista_ocorrencia import lista_ocorrencia
 from crud.api_v1.crud_lista_tipo_atendimento import lista_tipo_atendimento
 from crud.api_v1.crud_tb_projeto_fd import tb_projeto_fd
+from crud.api_v1.crud_tb_fedex_fotos import tb_fedex_fotos
 from fastapi import HTTPException
 import re
 
@@ -78,6 +80,12 @@ class Consultas:
             detalhes.projeto = 'FISERV'
 
         return detalhes
+
+    async def busca_fotos_e_geo_os(self, os: str, db: AsyncSession) -> TbFedexFotosBaseSC:
+        fotos_e_geo: TbFedexFotosBaseSC = tb_fedex_fotos.get_multi_filter(
+            db=db, filterby='os', filter=os)
+
+        return fotos_e_geo
 
     ##### VALIDAÇÕES #####
     def _valida_cliente(self, cliente: str):
