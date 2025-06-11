@@ -40,3 +40,4 @@ class TbProjetoFDModel(Base):
     nr_atendimento = Column("Nr_Atendimento", String(250))
     atendente_fechamento = Column("Atendente_Fechamento", String(250))
     unidade = Column("Unidade", String(250))
+    seriais = Column("seriais", String(999))

@@ -37,6 +37,7 @@ class TbProjetoFedexBaseSC(BaseModel):
     latitude: Optional[str]
     imageurl: Optional[str]
     unidade: Optional[str]
+    seriais: Optional[str] = None
 
 
 class TbProjetoFedexCreateSC(TbProjetoFedexBaseSC):
@@ -53,6 +54,7 @@ class TbProjetoFedexInDbBaseSC(TbProjetoFedexBaseSC):
     status: str
     conclusao_operador: str
     dt_fechamento: Optional[datetime]
+    seriais: Optional[str] = None
 
 
 class TbProjetoFedexSC(BaseModel):
@@ -61,6 +63,7 @@ class TbProjetoFedexSC(BaseModel):
     status: str
     conclusao_operador: str
     dt_fechamento: Optional[datetime]
+    seriais: Optional[str] = None
 
 
 class TbProjetoFedexConsultaOSSC(BaseModel):

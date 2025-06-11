@@ -58,7 +58,7 @@ async def consulta_lista_tipos(
     return await consulta.busca_lista_tipos(projeto, db)
 
 
-@router.get("/ordens-atendidas/{uid}", response_model=List[TbProjetoFedexSC])
+@router.get("/ordens-atendidas/{uid}", response_model=List[TbProjetoFedexSC], include_in_schema=False)
 async def consulta_ordens_atendidas_pelo_tec(
         uid: int = 0,
         db: Session = Depends(deps.get_db),
@@ -69,7 +69,7 @@ async def consulta_ordens_atendidas_pelo_tec(
     return await consulta.busca_lista_os_por_uid(uid=uid, db=db)
 
 
-@router.get("/detalhes/os/{os}", response_model=TbProjetoFedexConsultaOSSC)
+@router.get("/detalhes/os/{os}", response_model=TbProjetoFedexConsultaOSSC, include_in_schema=False)
 async def consulta_ordens_atendidas_pelo_tec(
         os: str,
         db: Session = Depends(deps.get_db),
