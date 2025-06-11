@@ -114,6 +114,11 @@ class Abertura():
         data_hora_formatada = data_hora_atual.strftime("%d/%m/%Y %H:%M:%S")
         data_hora_formato_sql_server: str = data_hora_atual.strftime(
             "%Y-%m-%d %H:%M:%S.%f")[:-3]
+
+        serials = '/'.join(
+            [serial for serial in info_os.seriais if serial is not None and serial.strip()
+             != '']
+        ) if info_os.seriais else ''
         obj_in = TbProjetoFedexCreateSC(
             os=os,
             chave=os,
@@ -148,7 +153,8 @@ class Abertura():
             latitude=info_os.latitude,
             longitude=info_os.longitude,
             imageurl=info_os.imageurl,
-            unidade=info_os.unidade
+            unidade=info_os.unidade,
+            seriais=serials
         )
 
         # STATUS

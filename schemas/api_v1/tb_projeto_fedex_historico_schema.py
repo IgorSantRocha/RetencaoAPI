@@ -36,3 +36,4 @@ class TbProjetoFedexHistoricoSC(BaseModel):
     longitude: Optional[str]
     latitude: Optional[str]
     imageurl: Optional[str]
+    seriais: List[Optional[str]] = None
