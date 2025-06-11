@@ -81,13 +81,8 @@ class Consultas:
 
         return detalhes
 
-    async def busca_fotos_e_geo_os(self, os: str, db: AsyncSession) -> TbFedexFotosBaseSC:
-        fotos_e_geo: TbFedexFotosBaseSC = tb_fedex_fotos.get_multi_filter(
-            db=db, filterby='os', filter=os)
-
-        return fotos_e_geo
-
     ##### VALIDAÇÕES #####
+
     def _valida_cliente(self, cliente: str):
         pattern = re.compile(r"^CTB[A-Z]{3}$")
         if not pattern.match(cliente):

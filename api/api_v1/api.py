@@ -1,8 +1,12 @@
 from fastapi import APIRouter
 
-from api.api_v1.endpoints import consultas, abertura, auth, firebase, respostas_sga
+from api.api_v1.endpoints import consultas, abertura, auth, firebase, respostas_sga, base_cep
 
 api_router = APIRouter()
+
+api_router.include_router(
+    base_cep.router, prefix="/busca-cep", tags=["Consultas CEP"])
+
 api_router.include_router(
     auth.router, prefix="/auth", tags=["Autenticação"])
 
