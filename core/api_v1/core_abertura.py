@@ -2,9 +2,11 @@ from datetime import datetime
 from sqlalchemy.ext.asyncio import AsyncSession
 from schemas.api_v1.tb_projeto_fedex_historico_schema import TbProjetoFedexHistoricoCreateSC, TbProjetoFedexHistoricoSC
 from schemas.api_v1.tb_projeto_fedex_schema import TbProjetoFedexBaseSC, TbProjetoFedexCreateSC
+from schemas.api_v1.lista_seriais_schema import ListaSeriaisCreateSC
 from crud.api_v1.crud_lista_projeto import lista_projetos
 from crud.api_v1.crud_tb_projeto_fd import tb_projeto_fd
 from crud.api_v1.crud_tb_projeto_fd_hist import tb_projeto_fd_hist
+from crud.api_v1.crud_lista_seriais import lista_seriais
 from core.config import settings
 import uuid
 import logging
@@ -14,6 +16,7 @@ logger = logging.getLogger(__name__)
 
 class Abertura():
     async def abertura_os(self, info_os: TbProjetoFedexHistoricoSC, meio_captura: str, db: AsyncSession) -> TbProjetoFedexCreateSC:
+
         chave: str = await self._gerar_id_unico()
         lista_os: str = f'\n'
         for os in info_os.oss:
@@ -70,6 +73,21 @@ class Abertura():
                 callid=obj_abertura.call_id
             )
             tb_projeto_fd_hist.create(db=db, obj_in=obj_in_hist)
+
+        data_hora_atual = datetime.now()
+        data_hora_formato_sql_server: str = data_hora_atual.strftime(
+            "%Y-%m-%d %H:%M:%S.%f")[:-3]
+        # Para cada serial, crio um objeto e insiro na tabela de lista_seriais, somente para a OS principal
+        if info_os.seriais:
+            for serial in info_os.seriais:
+                if serial is not None and serial.strip() != '':
+                    obj_serial = ListaSeriaisCreateSC(
+                        serial=serial,
+                        os=info_os.oss[0],
+                        criadoem=data_hora_formato_sql_server,
+                        uid=info_os.uid
+                    )
+                    lista_seriais.create(db=db, obj_in=obj_serial)
 
         return obj_abertura
 
